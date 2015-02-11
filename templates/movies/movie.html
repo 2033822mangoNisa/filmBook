@@ -7,10 +7,17 @@
 <body>
     <h1>{{ movie.title }}</h1>
     <h3>Year: {{ movie.year }}</h3>
-    <h3></b>Genres</h3>
+    <h3>Genres</h3>
     <ul>
         {% for genre in genres %}
             <li><a href={% url 'genre' genre.slug %}>{{ genre }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h3>Actors</h3>
+    <ul>
+        {% for actor in actors %}
+            <li><a href={% url 'actor' actor.slug %}>{{ actor }}</a></li>
         {% endfor %}
     </ul>
 

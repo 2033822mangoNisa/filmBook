@@ -14,12 +14,27 @@ class Genre(models.Model):
         return self.name
 
 
+class Actor(models.Model):
+    name = models.CharField(max_length=128)
+    info = models.TextField(blank=True)
+    link = models.URLField(blank=True)
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Actor, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Movie(models.Model):
     title = models.CharField(max_length=128)
     year = models.IntegerField(default=0)
     producer = models.CharField(max_length=128, blank=True)
     writer = models.CharField(max_length=128, blank=True)
     genres = models.ManyToManyField(Genre)
+    actors = models.ManyToManyField(Actor)
     slug = models.SlugField(unique=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -28,6 +43,9 @@ class Movie(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+
 
 
 

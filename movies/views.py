@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from movies.models import Movie, Genre
+from movies.models import Movie, Genre, Actor
 
 
 def index(request):
@@ -38,11 +38,29 @@ def movie(request, movie_name_slug):
 
     try:
         movie = Movie.objects.get(slug=movie_name_slug)
-        genres = Genre.objects.filter(movie__title=movie.title)
+        genres = Genre.objects.filter(movie__title=movie)
+        actors = Actor.objects.filter(movie__title=movie)
         context_dict['movie'] = movie
         context_dict['genres'] = genres
+        context_dict['actors'] = actors
 
     except Movie.DoesNotExist:
         pass
 
     return render(request, 'movies/movie.html', context_dict)
+
+
+def actor(request, actor_name_slug):
+    context_dict = {}
+
+    try:
+        actor = Actor.objects.get(slug=actor_name_slug)
+        movies = Movie.objects.filter(actors=actor)
+        #movies = Actor.objects.filter(movie__title='The Dark Knight')
+        context_dict['actor'] = actor
+        context_dict['movies'] = movies
+
+    except Actor.DoesNotExist:
+        pass
+
+    return render(request, 'movies/actor.html', context_dict)
