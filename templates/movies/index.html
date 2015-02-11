@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Movies</title>
+    </head>
+
+    <body>
+        
+
+        
+
+        <div>
+			{% if genres %}
+				<ul>
+				{% for genre in genres %}
+					<li><a href={% url 'genre' genre.slug %}>{{ genre.name }}</a></li>
+					
+				{% endfor %}
+				</ul>
+				
+			{% else %}
+				No genres present.
+			{% endif %}
+
+
+
+				
+				
+		</div>
+    </body>
+</html>

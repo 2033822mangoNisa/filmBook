@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <h1>{{ movie.title }}</h1>
+    <h3>Year: {{ movie.year }}</h3>
+    <h3></b>Genres</h3>
+    <ul>
+        {% for genre in genres %}
+            <li><a href={% url 'genre' genre.slug %}>{{ genre }}</a></li>
+        {% endfor %}
+    </ul>
+
+
+</body>
+</html>
