@@ -16,8 +16,9 @@
 
     <h3>Actors</h3>
     <ul>
-        {% for actor in actors %}
-            <li><a href={% url 'actor' actor.slug %}>{{ actor }}</a></li>
+        {% for character, actor in character_actor.items  %}
+
+            <li><a href={% url 'actor' actor.slug %} >{{ actor.name }}</a> - {{ character.name }}</li>
         {% endfor %}
     </ul>
 

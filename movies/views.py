@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from movies.models import Movie, Genre, Actor
+from movies.models import Movie, Genre, Actor, Character
 
 
 def index(request):
@@ -38,11 +38,29 @@ def movie(request, movie_name_slug):
 
     try:
         movie = Movie.objects.get(slug=movie_name_slug)
+
+        # get the movie's genres
         genres = Genre.objects.filter(movie__title=movie)
-        actors = Actor.objects.filter(movie__title=movie)
+
+        # get the movie's characters
+        characters = Character.objects.filter(movie__title=movie)
+
+        # get the actors who play the characters
+        actors = []
+        for character in characters:
+            actors += Actor.objects.filter(character__name=character)
+
+        character_actor = {}
+
+        for i in range(len(characters)):
+            character_actor[characters[i]] = actors[i]
+
         context_dict['movie'] = movie
         context_dict['genres'] = genres
         context_dict['actors'] = actors
+        context_dict['characters'] = characters
+        context_dict['range_char'] = range(len(characters))
+        context_dict['character_actor'] = character_actor
 
     except Movie.DoesNotExist:
         pass
@@ -55,10 +73,13 @@ def actor(request, actor_name_slug):
 
     try:
         actor = Actor.objects.get(slug=actor_name_slug)
-        movies = Movie.objects.filter(actors=actor)
+        characters = Character.objects.filter(actor__name=actor)
+        movies = Movie.objects.filter(characters=characters)
         #movies = Actor.objects.filter(movie__title='The Dark Knight')
+
         context_dict['actor'] = actor
         context_dict['movies'] = movies
+
 
     except Actor.DoesNotExist:
         pass

@@ -28,13 +28,21 @@ class Actor(models.Model):
         return self.name
 
 
+class Character(models.Model):
+    name = models.CharField(max_length=128)
+    actor = models.ForeignKey(Actor)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Movie(models.Model):
     title = models.CharField(max_length=128)
     year = models.IntegerField(default=0)
     producer = models.CharField(max_length=128, blank=True)
     writer = models.CharField(max_length=128, blank=True)
     genres = models.ManyToManyField(Genre)
-    actors = models.ManyToManyField(Actor)
+    characters = models.ManyToManyField(Character)
     slug = models.SlugField(unique=True, blank=True)
 
     def save(self, *args, **kwargs):

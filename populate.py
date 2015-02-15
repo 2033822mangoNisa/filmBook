@@ -4,7 +4,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'group_project.settings')
 import django
 django.setup()
 
-from movies.models import Genre, Movie, Actor
+from movies.models import Genre, Movie, Actor, Character
 
 
 def populate():
@@ -51,66 +51,94 @@ def populate():
     eddie_redmayne = add_actor('Eddie Redmayne')
     felicity_jones = add_actor('Felicity Jones')
 
+    # Add characters
+    bruce_wayne = add_char('Bruce Wayne', christian_bale)
+    joker = add_char('Joker', heath_ledger)
+    harvey_dent = add_char('Harvey Dent', aaron_eckhart)
+    alfred = add_char('Alfred', michael_caine)
+
+    alan_turing = add_char('Alan Turing', benedict_cumberbatch)
+    joan_clarke = add_char('Joan Clarke', keira_knightley)
+
+    narrator = add_char('The Narrator', edward_norton)
+    tyler_durden = add_char('Tyler Durden', brad_pitt)
+
+    nicholas_angel = add_char('Nicholas Angel', simon_pegg)
+    met_sergeant = add_char('Met Sergeant', martin_freeman)
+
+    mason = add_char('Mason', ellar_cotlane)
+    mom = add_char('Mom', patricia_arquette)
+
+    cobb = add_char('Cobb', leonardo_dicaprio)
+    arthur = add_char('Arthur', joseph_gordon_levitt)
+
+    leonard = add_char('Leonard', guy_pearce)
+
+    stephen_hawking = add_char('Stephen Hawking', eddie_redmayne)
+    jane_hawking = add_char('Jane Hawking', felicity_jones)
+
+    alfred_borden = add_char('Alfred Borden', christian_bale)
+    cutter = add_char('Cutter', michael_caine)
 
     # Add movies
     add_movie(
-        actors=[christian_bale, heath_ledger, aaron_eckhart, michael_caine],
+        characters=[bruce_wayne, joker, harvey_dent, alfred],
         genres=[drama, action, crime],
         title='The Dark Knight',
         year=2008
     )
 
     add_movie(
-        actors=[benedict_cumberbatch, keira_knightley],
+        characters=[alan_turing, joan_clarke],
         genres=[drama, biography, thriller],
         title='The Imitation Game',
         year=2014
     )
 
     add_movie(
-        actors=[ellar_cotlane, patricia_arquette],
+        characters=[mason, mom],
         genres=[drama],
         title='Boyhood',
         year=2014
     )
 
     add_movie(
-        actors=[leonardo_dicaprio, joseph_gordon_levitt],
+        characters=[cobb, arthur],
         genres=[action, mystery, sci_fi],
         title='Inception',
         year=2010
     )
 
     add_movie(
-        actors=[eddie_redmayne, felicity_jones],
+        characters=[stephen_hawking, jane_hawking],
         genres=[drama, romance, biography],
         title='The Theory of Everything',
         year=2014
     )
 
     add_movie(
-        actors=[guy_pearce],
+        characters=[leonard],
         genres=[mystery, thriller],
         title='Memento',
         year=2000
     )
 
     add_movie(
-        actors=[brad_pitt, edward_norton],
+        characters=[narrator, tyler_durden],
         genres=[drama],
         title='Fight Club',
         year=1999
     )
 
     add_movie(
-        actors=[simon_pegg, martin_freeman],
+        characters=[nicholas_angel, met_sergeant],
         genres=[comedy],
         title='Hot Fuzz',
         year=2007
     )
 
     add_movie(
-        actors=[christian_bale, michael_caine],
+        characters=[alfred_borden, cutter],
         genres=[drama, thriller, mystery],
         title='The Prestige',
         year=2006
@@ -128,14 +156,18 @@ def add_genre(name):
     return g
 
 
-def add_movie(genres, actors, title, year, producer='', writer=''):
+def add_movie(genres, characters, title, year, producer='', writer=''):
     m = Movie.objects.get_or_create(title=title, year=year, producer=producer, writer=writer)[0]
+
+    print genres
 
     for genre in genres:
         m.genres.add(genre)
 
-    for actor in actors:
-        m.actors.add(actor)
+    print characters
+
+    for character in characters:
+        m.characters.add(character)
 
     return m
 
@@ -143,6 +175,13 @@ def add_movie(genres, actors, title, year, producer='', writer=''):
 def add_actor(name, info='', link=''):
     a = Actor.objects.get_or_create(name=name, info=info, link=link)[0]
     return a
+
+
+def add_char(name, actor):
+    c = Character.objects.get_or_create(name=name, actor=actor)[0]
+
+    return c
+
 
 # Start execution here!
 if __name__ == '__main__':
