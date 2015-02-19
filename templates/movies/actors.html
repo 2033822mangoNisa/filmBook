@@ -1,0 +1,16 @@
+{% extends 'movies/base.html' %}
+
+{% block title %}Movies - Homepage{% endblock %}
+
+{% block body_block %}
+        <ul>
+            {% if actors %}
+                {% for actor in actors %}
+                    <li><a href={% url 'actor' actor.slug %}>{{ actor.name }}</a></li>
+                {% endfor %}
+            {% else %}
+                No actors present yet.
+            {% endif %}
+
+        </ul>
+{% endblock %}

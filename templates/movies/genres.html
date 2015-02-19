@@ -1,0 +1,18 @@
+{% extends 'movies/base.html' %}
+
+{% block title %}Genres{% endblock %}
+
+{% block body_block %}
+    {% if genres %}
+        <ul>
+			{% for genre in genres %}
+				<li><a href={% url 'genre' genre.slug %}>{{ genre.name }}</a></li>
+
+			{% endfor %}
+        </ul>
+
+    {% else %}
+        No genres present.
+    {% endif %}
+{% endblock %}
+

@@ -6,10 +6,26 @@ from movies.models import Movie, Genre, Actor, Character
 def index(request):
     genres = Genre.objects.all()
     movies = Movie.objects.all()
-    tdk = Genre.objects.filter(movie__title='The Dark Knight')
-    context_dict = {'genres': genres, 'movies': movies, 'tdk': tdk}
+
+    context_dict = {'genres': genres, 'movies': movies}
 
     return render(request, 'movies/index.html', context_dict)
+
+
+def genres(request):
+    genres = Genre.objects.all()
+
+    context_dict = {'genres': genres}
+
+    return render(request, 'movies/genres.html', context_dict)
+
+
+def actors(request):
+    actors = Actor.objects.order_by('name')
+
+    context_dict = {'actors': actors}
+
+    return render(request, 'movies/actors.html', context_dict)
 
 
 def genre(request, genre_name_slug):
@@ -26,7 +42,6 @@ def genre(request, genre_name_slug):
         context_dict['genre'] = genre
         context_dict['genre_name_slug'] = genre_name_slug
 
-
     except Genre.DoesNotExist:
         pass
 
@@ -40,20 +55,20 @@ def movie(request, movie_name_slug):
         movie = Movie.objects.get(slug=movie_name_slug)
 
         # get the movie's genres
-        genres = Genre.objects.filter(movie__title=movie)
+        genres = movie.genres.all()
 
         # get the movie's characters
-        characters = Character.objects.filter(movie__title=movie)
+        characters = movie.characters.all()
 
         # get the actors who play the characters
-        actors = []
-        for character in characters:
-            actors += Actor.objects.filter(character__name=character)
+        actors = movie.get_actors()
 
         character_actor = {}
 
         for i in range(len(characters)):
             character_actor[characters[i]] = actors[i]
+
+        rating = movie.get_rating()
 
         context_dict['movie'] = movie
         context_dict['genres'] = genres
@@ -61,6 +76,7 @@ def movie(request, movie_name_slug):
         context_dict['characters'] = characters
         context_dict['range_char'] = range(len(characters))
         context_dict['character_actor'] = character_actor
+        context_dict['rating'] = rating
 
     except Movie.DoesNotExist:
         pass
@@ -75,11 +91,11 @@ def actor(request, actor_name_slug):
         actor = Actor.objects.get(slug=actor_name_slug)
         characters = Character.objects.filter(actor__name=actor)
         movies = Movie.objects.filter(characters=characters)
-        #movies = Actor.objects.filter(movie__title='The Dark Knight')
+        rating = actor.get_rating()
 
         context_dict['actor'] = actor
         context_dict['movies'] = movies
-
+        context_dict['rating'] = rating
 
     except Actor.DoesNotExist:
         pass
