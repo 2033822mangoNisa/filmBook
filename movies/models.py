@@ -35,6 +35,13 @@ class Actor(models.Model):
 
         return rating
 
+    def get_characters(self):
+        return Character.objects.filter(actor__name=self.name)
+
+    def get_movies(self):
+        characters = self.get_characters()
+        return Movie.objects.filter(characters=characters)
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Actor, self).save(*args, **kwargs)
@@ -45,7 +52,17 @@ class Actor(models.Model):
 
 class Character(models.Model):
     name = models.CharField(max_length=128)
-    actor = models.ForeignKey(Actor)
+    desc = models.TextField()
+    actor = models.ForeignKey(Actor, blank=True, null=True)
+
+    @staticmethod
+    def get_character_list():
+        characters = []
+        i = 1
+        for character in Character.objects.all():
+            characters += (i, character.name)
+            i += 1
+        return characters
 
     def __unicode__(self):
         return self.name
@@ -57,7 +74,7 @@ class Movie(models.Model):
     producer = models.CharField(max_length=128, blank=True)
     writer = models.CharField(max_length=128, blank=True)
     genres = models.ManyToManyField(Genre)
-    characters = models.ManyToManyField(Character)
+    characters = models.ManyToManyField(Character, blank=True)
     slug = models.SlugField(unique=True, blank=True)
 
     def get_rating(self):
@@ -81,7 +98,6 @@ class Movie(models.Model):
 
         return actors
 
-
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Movie, self).save(*args, **kwargs)
@@ -92,10 +108,21 @@ class Movie(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    name = models.CharField(max_length=128)
+    first_name = models.CharField(max_length=128, blank=True)
+    last_name = models.CharField(max_length=128, blank=True)
+    picture = models.ImageField(upload_to='profile_images', blank=True)
+    type = models.CharField(max_length=128)
 
     def __unicode__(self):
         return self.user.username
+
+    def save(self, *args, **kwargs):
+        try:
+            existing = UserProfile.objects.get(user=self.user)
+            self.id = existing.id
+        except UserProfile.DoesNotExist:
+            pass
+        super(UserProfile, self).save(*args, **kwargs)
 
 
 class MovieRating(models.Model):
@@ -114,6 +141,20 @@ class ActorRating(models.Model):
 
     def __unicode__(self):
         return self.actor.name
+
+
+class Comment(models.Model):
+    comment = models.CharField(max_length=256)
+    date = models.DateTimeField()
+    user = models.ForeignKey(UserProfile)
+    movie = models.ForeignKey(Movie)
+
+
+class Review(models.Model):
+    text = models.TextField()
+    date = models.DateTimeField()
+    user = models.ForeignKey(UserProfile)
+    movie = models.ForeignKey(Movie)
 
 
 

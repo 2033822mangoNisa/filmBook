@@ -1,0 +1,38 @@
+{% extends 'movies/base.html' %}
+
+{% block body_block %}
+
+	<h1>Add Characters</h1>
+
+    {% if movie %}
+        <ul>
+            {% for character, actor in character_actor.items  %}
+                {% if actor %}
+
+                    <li>{{ character.name }} - <a href="{% url 'actor' actor.slug %}" >{{ actor.name }}</a></li>
+                {% else %}
+                    <li>{{ character.name }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+	<form id="character_form" method="post" action="{% url 'add_character' movie.slug %}">
+
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            {{ field.errors }}
+            {{ field.help_text }}
+            {{ field }}
+            <br />
+        {% endfor %}
+
+        <input type="submit" name="submit" value="Add Character" /><br />
+
+    </form>
+
+{% endblock %}

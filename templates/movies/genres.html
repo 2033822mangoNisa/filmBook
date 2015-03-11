@@ -6,7 +6,7 @@
     {% if genres %}
         <ul>
 			{% for genre in genres %}
-				<li><a href={% url 'genre' genre.slug %}>{{ genre.name }}</a></li>
+				<li><a href="{% url 'genre' genre.slug %}">{{ genre.name }}</a></li>
 
 			{% endfor %}
         </ul>

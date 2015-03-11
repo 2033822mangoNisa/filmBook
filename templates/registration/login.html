@@ -1,0 +1,26 @@
+{% extends "movies/base.html" %}
+
+{% block body_block %}
+
+    <div class="login-form col-lg-8 col-md-8 col-sm-10 col-xs-12">
+        <form class="form-signin" role="form" method="post" action=".">
+            {% csrf_token %}
+
+            <h2 class="form-signin-heading">Please sign in</h2>
+            <label for="id_username" class="sr-only">Username</label>
+
+            <input type="text" id="id_username" class="form-control" name="username" placeholder="Username" required autofocus>
+
+            <label for="id_password" class="sr-only">Password</label>
+            <input type="password" id="id_password" name="password" class="form-control" placeholder="Password" required>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+
+        <p>Not a member? <a href="{% url 'registration_register' %}">Register</a>!</p>
+    </div>
+{% endblock %}

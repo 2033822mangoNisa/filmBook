@@ -1,0 +1,34 @@
+{% extends 'movies/base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Search{% endblock %}
+
+{% block body_block %}
+
+    <div class="movie movie-first-box col-lg-12 col-md-12">
+        <div class="profile-picture col-lg-4 col-md-4">
+            {% if user_profile.picture %}
+
+                <img src="{{ user_profile.picture.url }}" alt="profile picture" />
+            {% endif %}
+        </div>
+
+        <div class="profile-description col-lg-8 col-md-8">
+            <h2 class="movie-header">{{ current_user }}</h2><br />
+
+            {% if user_profile %}
+                <p>Type: {{ user_type }}</p>
+                <p>First Name: {{ user_profile.first_name }}</p>
+                <p>Last Name: {{ user_profile.last_name }}</p>
+
+        {% endif %}
+
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}

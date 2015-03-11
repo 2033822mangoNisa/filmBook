@@ -10,7 +10,7 @@
     <h3>Movies</h3>
     <ul>
         {% for movie in movies %}
-            <li><a href={% url 'movie' movie.slug %}>{{ movie }}</a></li>
+            <li><a href="{% url 'movie' movie.slug %}">{{ movie }}</a></li>
         {% endfor %}
     </ul>
 

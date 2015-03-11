@@ -6,7 +6,7 @@
         <ul>
             {% if actors %}
                 {% for actor in actors %}
-                    <li><a href={% url 'actor' actor.slug %}>{{ actor.name }}</a></li>
+                    <li><a href="{% url 'actor' actor.slug %}">{{ actor.name }}</a></li>
                 {% endfor %}
             {% else %}
                 No actors present yet.

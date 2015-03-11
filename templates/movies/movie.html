@@ -1,25 +1,54 @@
 {% extends 'movies/base.html' %}
 
+{% load staticfiles %}
+
 {% block title %}{{ movie.title }}{% endblock %}
 
 {% block body_block %}
-    <h1>{{ movie.title }}</h1>
-    <h3>Year: {{ movie.year }}</h3>
-    <h3>Rating: {{ rating }} / 5.0</h3>
-    <h3>Genres</h3>
-    <ul>
-        {% for genre in genres %}
-            <li><a href={% url 'genre' genre.slug %}>{{ genre }}</a></li>
-        {% endfor %}
-    </ul>
+    <div class="movie movie-first-box" >
+        <h2 class="movie-header">{{ movie.title }}</h2>
+        <h3>Year: {{ movie.year }}</h3>
+        <h3>Rating: {{ rating }} / 5.0</h3>
+        <h3>Genres</h3>
+        <ul>
+            {% for genre in genres %}
+                <li><a href="{% url 'genre' genre.slug %}">{{ genre }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="movie">
+        <h3 class="movie-header">Cast</h3>
+        <ul>
+            {% for character, actor in character_actor.items  %}
 
-    <h3>Actors</h3>
-    <ul>
-        {% for character, actor in character_actor.items  %}
+                <li><a href="{% url 'actor' actor.slug %}" >{{ actor.name }}</a> - {{ character.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-            <li><a href={% url 'actor' actor.slug %} >{{ actor.name }}</a> - {{ character.name }}</li>
-        {% endfor %}
-    </ul>
+    <div class="movie" >
+        <h3 class="movie-header">Comments</h3>
+        {% if user.is_authenticated %}
+            <form id="comment_form" method="post" action="{% url 'movie' movie.slug %}">
+
+                {% csrf_token %}
+                {% for hidden in comment_form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+
+                {% for field in comment_form.visible_fields %}
+                    {{ field.errors }}
+                    {{ field.help_text }}
+                    {{ field }}
+                    <br />
+                {% endfor %}
+
+                <input type="submit" name="submit" value="Add Comment" /><br />
+
+            </form>
+        {% endif %}
+
+    </div>
 
 {% endblock %}
 

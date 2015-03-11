@@ -1,0 +1,18 @@
+.movie {
+    display: block;
+    background-color: #ffffff;
+    padding: 1px 20px;
+    border-radius: 5px;
+    margin: 20px 0;
+    border: 1px solid #dfe0e4;
+}
+
+.movie-first-box {
+    margin-top:0;
+}
+
+.movie-header {
+    border-bottom: 1px solid lightgrey;
+    padding-bottom: 5px;
+    margin-top: 10px;
+}
