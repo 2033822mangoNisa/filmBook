@@ -10,6 +10,11 @@
         <h3>Year: {{ movie.year }}</h3>
         <h3>Rating: {{ rating }} / 5.0</h3>
         <h3>Genres</h3>
+        {% if time %}
+            it is
+        {% else %}
+            its not
+        {% endif %}
         <ul>
             {% for genre in genres %}
                 <li><a href="{% url 'genre' genre.slug %}">{{ genre }}</a></li>
@@ -29,23 +34,33 @@
     <div class="movie" >
         <h3 class="movie-header">Comments</h3>
         {% if user.is_authenticated %}
-            <form id="comment_form" method="post" action="{% url 'movie' movie.slug %}">
+            <form class="form-horizontal" id="comment_form" method="post" action="{% url 'movie' movie.slug %}">
 
                 {% csrf_token %}
-                {% for hidden in comment_form.hidden_fields %}
-                    {{ hidden }}
-                {% endfor %}
 
-                {% for field in comment_form.visible_fields %}
-                    {{ field.errors }}
-                    {{ field.help_text }}
-                    {{ field }}
-                    <br />
-                {% endfor %}
+                <div class="form-group">
+                    <div class="col-lg-8 col-md-8">
+                        <textarea class="form-control" rows="4" cols="40" style="resize: none;" id="id_comment" name="comment" placeholder="Enter a comment" required></textarea>
+                    </div>
+                </div>
 
-                <input type="submit" name="submit" value="Add Comment" /><br />
-
+                <div class="form-group">
+                    <div class="col-lg-8 col-md-8">
+                        <button class="btn btn-default" type="submit" name="submit" >Add comment</button><br />
+                    </div>
+                </div>
             </form>
+        {% endif %}
+
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment">
+                    Posted by: <b><a href="{% url 'profile' comment.user.username %}">{{ comment.user }}</a> </b> <br />
+                    {{ comment.comment }} <br />
+                    {{ comment.date }} <br />
+
+                </div>
+            {% endfor %}
         {% endif %}
 
     </div>

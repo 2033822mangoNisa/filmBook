@@ -36,7 +36,7 @@ class CharacterForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
 
-    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 60, 'style': 'resize:none;'}))
+    comment = forms.CharField(widget=forms.Textarea())
 
     class Meta:
         model = Comment

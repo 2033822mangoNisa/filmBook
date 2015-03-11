@@ -2,8 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+import datetime
 from movies.models import Movie, Genre, Actor, Character, MovieRating, UserProfile
-from movies.forms import MovieForm, CharacterForm, CommentForm, UserProfileForm
+from movies.forms import MovieForm, CharacterForm, CommentForm, UserProfileForm, Comment
 
 
 def index(request):
@@ -76,6 +77,9 @@ def movie(request, movie_name_slug):
         # get the movie's rating
         rating = movie.get_rating()
 
+        # get the movie's comments
+        comments = Comment.objects.filter(movie=movie).order_by('-date')
+
         # add everything to context dictionary
         context_dict['movie'] = movie
         context_dict['genres'] = genres
@@ -84,28 +88,25 @@ def movie(request, movie_name_slug):
         context_dict['range_char'] = range(len(characters))
         context_dict['character_actor'] = character_actor
         context_dict['rating'] = rating
+        context_dict['comments'] = comments
 
         if request.method == 'POST':
             form = CommentForm(request.POST)
 
-            # Have we been provided with a valid form?
             if form.is_valid():
-                # Save the new category to the database.
-                form.save(commit=True)
+                comment = form.save(commit=False)
+                comment.movie = movie
+                comment.date = datetime.datetime.now()
+                comment.user = request.user
 
-                # Now call the index() view.
-                # The user will be shown the homepage.
-
+                comment.save()
+                return HttpResponseRedirect('/movies/movie/' + movie_name_slug)
             else:
-                # The supplied form contained errors - just print them to the terminal.
+
                 print form.errors
 
         else:
-            # If the request was not a POST, display the form to enter details.
             form = CommentForm()
-
-        # Bad form (or form details), no form supplied...
-        # Render the form with error messages (if any).
 
         context_dict['comment_form'] = form
 

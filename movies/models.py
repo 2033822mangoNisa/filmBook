@@ -145,8 +145,8 @@ class ActorRating(models.Model):
 
 class Comment(models.Model):
     comment = models.CharField(max_length=256)
-    date = models.DateTimeField()
-    user = models.ForeignKey(UserProfile)
+    date = models.DateTimeField(null=True)
+    user = models.ForeignKey(User)
     movie = models.ForeignKey(Movie)
 
 
