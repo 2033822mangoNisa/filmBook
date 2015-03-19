@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 import datetime
 from movies.models import Movie, Genre, Actor, Character, MovieRating, UserProfile
 from movies.forms import MovieForm, CharacterForm, CommentForm, UserProfileForm, Comment
+import json
 
 
 def index(request):
@@ -75,10 +76,27 @@ def movie(request, movie_name_slug):
             character_actor[characters[i]] = actors[i]
 
         # get the movie's rating
-        rating = movie.get_rating()
+        ratings = movie.get_rating()
+        rating = ratings['rating']
+        ratings_no = ratings['ratings_no']
 
         # get the movie's comments
         comments = Comment.objects.filter(movie=movie).order_by('-date')
+        user_rating = 0
+
+        if request.user.is_authenticated():
+            user_profile = UserProfile.objects.get(user=request.user)
+            user_ratings = MovieRating.objects.filter(user=user_profile)
+
+            existing_rating = None
+            for r in user_ratings:
+                if r.movie == movie:
+                    existing_rating = r
+
+            if existing_rating is not None:
+                user_rating = existing_rating.rating
+        else:
+            user_profile = ''
 
         # add everything to context dictionary
         context_dict['movie'] = movie
@@ -89,6 +107,9 @@ def movie(request, movie_name_slug):
         context_dict['character_actor'] = character_actor
         context_dict['rating'] = rating
         context_dict['comments'] = comments
+        context_dict['user_profile'] = user_profile
+        context_dict['user_rating'] = user_rating
+        context_dict['ratings_no'] = ratings_no
 
         if request.method == 'POST':
             form = CommentForm(request.POST)
@@ -255,4 +276,39 @@ def profile(request, username):
     return render(request, 'movies/profile.html', context_dict)
 
 
+@login_required
+def rate(request):
+    movie_id = None
+    rating = None
+    user_id = None
 
+    if request.method == 'GET':
+        movie_id = request.GET['m_id']
+        rating = int(request.GET['r'])
+        user_id = request.GET['u_id']
+
+    movie = Movie.objects.get(id=int(movie_id))
+    user = User.objects.get(id=int(user_id))
+    user_profile = UserProfile.objects.get(user=user)
+
+    user_ratings = MovieRating.objects.filter(user=user_profile)
+
+    existing_rating = None
+    for r in user_ratings:
+        if r.movie == movie:
+            existing_rating = r
+
+    if existing_rating is not None:
+        existing_rating.rating = rating
+        existing_rating.save()
+    else:
+        movie_rating_new = MovieRating.objects.get_or_create(movie=movie, user=user_profile, rating=rating)[0]
+
+    ratings = movie.get_rating()
+    new_rating = ratings['rating']
+    new_ratings_no = ratings['ratings_no']
+
+    response_dict = {'rating': new_rating, 'ratings_no': new_ratings_no}
+    # response_json = json.dump(['data', response_dict])
+
+    return HttpResponse(new_rating)

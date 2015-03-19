@@ -4,10 +4,13 @@
 
 {% block body_block %}
     {% if genres %}
-        <ul>
+        <ul class="movie-list">
 			{% for genre in genres %}
-				<li><a href="{% url 'genre' genre.slug %}">{{ genre.name }}</a></li>
-
+                <div class="movie movie-first-box col-lg-12 col-md-12">
+				    <li>
+                        <h3 class="movie-header"><a href="{% url 'genre' genre.slug %}">{{ genre.name }}</a></h3>
+                    </li>
+                </div>
 			{% endfor %}
         </ul>
 

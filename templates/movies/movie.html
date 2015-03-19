@@ -1,29 +1,61 @@
 {% extends 'movies/base.html' %}
 
 {% load staticfiles %}
+{% load thumbnail %}
 
 {% block title %}{{ movie.title }}{% endblock %}
 
 {% block body_block %}
-    <div class="movie movie-first-box" >
-        <h2 class="movie-header">{{ movie.title }}</h2>
-        <h3>Year: {{ movie.year }}</h3>
-        <h3>Rating: {{ rating }} / 5.0</h3>
-        <h3>Genres</h3>
-        {% if time %}
-            it is
-        {% else %}
-            its not
-        {% endif %}
-        <ul>
-            {% for genre in genres %}
-                <li><a href="{% url 'genre' genre.slug %}">{{ genre }}</a></li>
-            {% endfor %}
-        </ul>
+
+
+
+    <div class="movie movie-first-box col-lg-12 col-md-12" >
+
+
+        <div class="profile-picture col-lg-4 col-md-4">
+            {% if movie.picture %}
+                {% thumbnail movie.picture "200x200" crop="center" as im %}
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+            {% endif %}
+        </div>
+
+        <div class="profile-description col-lg-8 col-md-8">
+            <h2 class="movie-header">{{ movie.title }} <span class="movie-year">({{ movie.year }})</span></h2>
+
+            <!-- Genres -->
+            <ul class="genres movie-list">
+                {% for genre in genres %}
+                    <li class="genre"><a href="{% url 'genre' genre.slug %}">{{ genre }}</a></li>
+                {% endfor %}
+            </ul>
+
+
+            <div class="rating-title"><h3>Rating: <span id="rating">{{ rating }}</span> / 10.0</h3> by {{ ratings_no }} users</div>
+
+            <!-- Rating for user -->
+            {% if user.is_authenticated %}
+                <div class="rating-panel">
+                    Your rating:<div class="star_rating" data-average="{{ user_rating }}" data-id="1" data-movieid="{{ movie.id }}" data-userid="{{ user.id }}"></div>
+                </div>
+            {% endif %}
+
+
+
+
+
+        </div>
+
     </div>
-    <div class="movie">
+
+    <div class="movie col-lg-12 col-md-12">
+        <h3 class="movie-header">Summary</h3>
+        <div class="movie-summary">{{ movie.summary }}</div>
+    </div>
+
+    <div class="movie col-lg-12 col-md-12">
         <h3 class="movie-header">Cast</h3>
-        <ul>
+        <ul class="movie-list">
             {% for character, actor in character_actor.items  %}
 
                 <li><a href="{% url 'actor' actor.slug %}" >{{ actor.name }}</a> - {{ character.name }}</li>
@@ -31,7 +63,7 @@
         </ul>
     </div>
 
-    <div class="movie" >
+    <div class="movie col-lg-12 col-md-12" >
         <h3 class="movie-header">Comments</h3>
         {% if user.is_authenticated %}
             <form class="form-horizontal" id="comment_form" method="post" action="{% url 'movie' movie.slug %}">
@@ -64,6 +96,8 @@
         {% endif %}
 
     </div>
+
+
 
 {% endblock %}
 

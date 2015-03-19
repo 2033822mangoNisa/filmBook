@@ -1,6 +1,7 @@
 {% extends 'movies/base.html' %}
 
 {% load staticfiles %}
+{% load thumbnail %}
 
 {% block title %}Search{% endblock %}
 
@@ -22,7 +23,9 @@
                 <p>First Name: {{ user_profile.first_name }}</p>
                 <p>Last Name: {{ user_profile.last_name }}</p>
 
-        {% endif %}
+            {% endif %}
+
+
 
         </div>
     </div>

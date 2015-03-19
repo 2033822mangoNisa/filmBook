@@ -13,4 +13,5 @@ urlpatterns = patterns('',
                        url(r'^(?P<movie_slug>[\w\-]+)/add_character/$', views.add_character, name='add_character'),
                        url(r'^search/$', views.search, name='search'),
                        url(r'^user/(?P<username>[\w\-]+)/$', views.profile, name='profile'),
+                       url(r'^rate/$', views.rate, name='rate'),
                        )

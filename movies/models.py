@@ -1,6 +1,8 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from datetime import datetime
+from sorl.thumbnail import ImageField, get_thumbnail
 
 
 class Genre(models.Model):
@@ -75,21 +77,32 @@ class Movie(models.Model):
     writer = models.CharField(max_length=128, blank=True)
     genres = models.ManyToManyField(Genre)
     characters = models.ManyToManyField(Character, blank=True)
+    user = models.ForeignKey(User, null=True)
+    picture = models.ImageField(upload_to='movie_images', blank=True)
+    summary = models.TextField()
+    date_added = models.DateTimeField()
+    link = models.URLField(blank=True)
     slug = models.SlugField(unique=True, blank=True)
 
     def get_rating(self):
+        ratings_list = {}
         ratings = MovieRating.objects.filter(movie=self)
 
         ratings_sum = 0
+        ratings_no = 0
         for r in ratings:
             ratings_sum += r.rating
+            ratings_no += 1
 
         if len(ratings) != 0:
             rating = ratings_sum/len(ratings)
         else:
             rating = 0
 
-        return rating
+        ratings_list['rating'] = rating
+        ratings_list['ratings_no'] = ratings_no
+
+        return ratings_list
 
     def get_actors(self):
         actors = []
@@ -100,6 +113,7 @@ class Movie(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
+        self.date_added = datetime.now()
         super(Movie, self).save(*args, **kwargs)
 
     def __unicode__(self):

@@ -3,7 +3,7 @@
     background-color: #ffffff;
     padding: 1px 20px;
     border-radius: 5px;
-    margin: 20px 0;
+    margin: 10px 0;
     border: 1px solid #dfe0e4;
 }
 
@@ -23,4 +23,37 @@
     margin: 10px 0;
     border-radius: 5px;
     border: 1px solid #dfe0e4;
+}
+
+.profile-description {
+    padding-left: 10px;
+}
+
+.movie-list {
+    list-style: none;
+    width: 100%;
+    padding: 0;
+}
+
+.genre {
+    display: inline-block;
+    float: left;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.rating-title {
+    display: block;
+    width: 100%;
+    float: left;
+}
+
+.rating-panel {
+    position: relative;
+    width: 100%;
+    float: left;
+}
+
+.movie-summary {
+    margin-bottom: 10px;
 }

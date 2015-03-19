@@ -18,6 +18,8 @@
     <link href="{% static 'stylesheets/offcanvas.css' %}" rel="stylesheet">
     <link href="{% static 'stylesheets/base.css' %}" rel="stylesheet">
     <link href="{% static 'stylesheets/movie.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static 'stylesheets/jRating.jquery.css' %}" media="screen" />
+
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -128,12 +130,6 @@
 
 </div>
 
-
-
-
-
-
-
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -143,6 +139,11 @@
 <script src="http://getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
 
 <script src="offcanvas.js"></script>
+
+<script type="text/javascript" src={% static 'js/jRating.jquery.js' %}></script>
+<script type="text/javascript" src={% static 'js/movieRating.js' %}></script>
+
+
 
 </body>
 </html>
