@@ -20,9 +20,20 @@ def index(request):
 
 
 def genres(request):
-    genres = Genre.objects.all()
 
-    context_dict = {'genres': genres}
+    # initialize dictionary with movies filtered based in genre
+    movies_dict = {}
+    genres = Genre.objects.all()
+    for genre in genres:
+        movies_dict[genre.name] = []
+
+    # add movies to dictionary
+    movies = Movie.objects.all()
+    for movie in movies:
+        for g in movie.genres.all():
+            movies_dict[g.name].append(movie)
+
+    context_dict = {'genres': genres, 'movies': movies_dict}
 
     return render(request, 'movies/genres.html', context_dict)
 

@@ -1,7 +1,7 @@
 .movie {
     display: block;
     background-color: #ffffff;
-    padding: 1px 20px;
+    padding: 0 20px;
     border-radius: 5px;
     margin: 10px 0;
     border: 1px solid #dfe0e4;
@@ -56,4 +56,27 @@
 
 .movie-summary {
     margin-bottom: 10px;
+}
+
+.movie-small {
+    margin: 10px;
+    padding: 7px;
+}
+
+.movie-small-container {
+    padding: 0;
+}
+
+.movie-small-footer {
+    position: relative;
+    float: left;
+    width: 100%;
+    display: block;
+    border-top: 1px solid lightgrey;
+    padding: 5px 0;
+    margin: 10px 0;
+}
+
+.movie-list-genre {
+    padding: 10px;
 }

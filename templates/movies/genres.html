@@ -1,5 +1,7 @@
 {% extends 'movies/base.html' %}
 
+{% load thumbnail %}
+
 {% block title %}Genres{% endblock %}
 
 {% block body_block %}
@@ -9,6 +11,33 @@
                 <div class="movie movie-first-box col-lg-12 col-md-12">
 				    <li>
                         <h3 class="movie-header"><a href="{% url 'genre' genre.slug %}">{{ genre.name }}</a></h3>
+                        {% for g, movie_list in movies.items %}
+                            {% if g == genre.name %}
+                                <ul class="movie-list">
+                                {% for m in movie_list %}
+                                    <div class="movie-small-container col-lg-3 col-md-3">
+                                        <div class="comment movie-small">
+                                            <li>
+                                                {% if m.picture %}
+                                                    {% thumbnail m.picture "116x116" crop="center" as im %}
+                                                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                                    {% endthumbnail %}
+                                                {% else %}
+                                                    <img src="/media/movie_images/default_movie_picture.jpg">
+                                                {% endif %}
+                                                <a href="{% url 'movie' m.slug %}">{{ m.title }}</a>
+                                            </li>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </ul>
+                                <div class="movie-small-footer">
+                                    <a href="{% url 'genre' genre.slug %}">View all movies in {{ genre.name }}</a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+
                     </li>
                 </div>
 			{% endfor %}

@@ -17,6 +17,8 @@
                 {% thumbnail movie.picture "200x200" crop="center" as im %}
                     <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                 {% endthumbnail %}
+            {% else %}
+                <img src="/media/movie_images/default_movie_picture.jpg">
             {% endif %}
         </div>
 

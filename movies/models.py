@@ -78,7 +78,7 @@ class Movie(models.Model):
     genres = models.ManyToManyField(Genre)
     characters = models.ManyToManyField(Character, blank=True)
     user = models.ForeignKey(User, null=True)
-    picture = models.ImageField(upload_to='movie_images', blank=True)
+    picture = models.ImageField(upload_to='movie_images', default='movie_images/default_movie_picture.jpg')
     summary = models.TextField()
     date_added = models.DateTimeField()
     link = models.URLField(blank=True)
@@ -103,6 +103,15 @@ class Movie(models.Model):
         ratings_list['ratings_no'] = ratings_no
 
         return ratings_list
+
+    def show_rating(self):
+        return self.get_rating()['rating']
+
+    def get_image(self):
+        if self.picture:
+            return self.picture.url
+        else:
+            return 'movie_images/default_movie_picture.jpg'
 
     def get_actors(self):
         actors = []

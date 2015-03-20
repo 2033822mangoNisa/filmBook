@@ -3,18 +3,19 @@
 {% block title %}{{ genre.name }}{% endblock %}
 
 {% block body_block %}
-    <h1>{{ genre_name }}</h1>
-    {% if genre %}
-        {% if movies %}
-        <ul>
+    <div class="movie movie-first-box">
+        <h1 class="movie-header">{{ genre_name }}</h1>
+        {% if genre %}
+            {% if movies %}
+            <ul class="movie-list-genre">
                 {% for movie in movies %}
-                <li><a href="{% url 'movie' movie.slug %}">{{ movie.title }}</a></li>
+                    <li><a href="{% url 'movie' movie.slug %}">{{ movie.title }}</a></li>
                 {% endfor %}
-                </ul>
-        {% else %}
+            </ul>
+            {% else %}
                 <strong>No movies currently in category.</strong>
-                {% endif %}
-
+            {% endif %}
+    </div>
 
     {% endif %}
 
