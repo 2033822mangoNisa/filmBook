@@ -3,14 +3,45 @@
 {% block title %}Movies - Homepage{% endblock %}
 
 {% block body_block %}
-        <ul>
+    <div class="movie movie-first-box">
+        <h3 class="movie-header">Actors</h3>
+        <ul class="movie-list">
             {% if actors %}
                 {% for actor in actors %}
-                    <li><a href="{% url 'actor' actor.slug %}">{{ actor.name }}</a></li>
+                    <li><a href="{% url 'profile' actor.user.user.username %}">{{ actor.name }} {{ actor.last_name }}</a></li>
                 {% endfor %}
             {% else %}
                 No actors present yet.
             {% endif %}
 
         </ul>
+    </div>
+
+    <div class="movie">
+        <h3 class="movie-header">Producers</h3>
+        <ul class="movie-list">
+            {% if producers %}
+                {% for producer in producers %}
+                    <li><a href="{% url 'profile' producer.user.user.username %}">{{ producer.first_name }} {{ producer.last_name }}</a></li>
+                {% endfor %}
+            {% else %}
+                No actors present yet.
+            {% endif %}
+
+        </ul>
+    </div>
+
+
+{% endblock %}
+
+{% block sidebar %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">Available actors</div>
+
+        <ul class="list-group">
+            {% for actor in available_actors %}
+                <li class="list-group-item"><a href="{% url 'profile' actor.user.user.username %}">{{ actor.name }} {{ actor.last_name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

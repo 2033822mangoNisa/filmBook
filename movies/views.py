@@ -3,25 +3,25 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 import datetime
-from movies.models import Movie, Genre, Actor, Character, MovieRating, UserProfile
+from movies.models import Movie, Genre, Actor, Character, MovieRating, UserProfile, Producer
 from movies.forms import MovieForm, CharacterForm, CommentForm, UserProfileForm, Comment
-import json
+import operator
 
 
 def index(request):
-    genres = Genre.objects.all()
+    genres = Genre.objects.all().order_by('name')
     movies = Movie.objects.order_by('title')
 
+    movies_ratings = Movie.objects.all().order_by('-rating')
 
-
-    context_dict = {'genres': genres, 'movies': movies}
+    context_dict = {'genres': genres, 'movies': movies, 'top_movies': movies_ratings}
 
     return render(request, 'movies/index.html', context_dict)
 
 
 def genres(request):
 
-    # initialize dictionary with movies filtered based in genre
+    # initialize dictionary with movies filtered based on genre
     movies_dict = {}
     genres = Genre.objects.all()
     for genre in genres:
@@ -40,8 +40,11 @@ def genres(request):
 
 def actors(request):
     actors = Actor.objects.order_by('name')
+    producers = Producer.objects.all().order_by('last_name')
+    available_actors = Actor.objects.filter(available='yes')
 
-    context_dict = {'actors': actors}
+
+    context_dict = {'actors': actors, 'producers': producers, 'available_actors': available_actors}
 
     return render(request, 'movies/actors.html', context_dict)
 
@@ -318,6 +321,10 @@ def rate(request):
     ratings = movie.get_rating()
     new_rating = ratings['rating']
     new_ratings_no = ratings['ratings_no']
+
+    # update movie's rating field
+    movie.rating = new_rating
+    movie.save()
 
     response_dict = {'rating': new_rating, 'ratings_no': new_ratings_no}
     # response_json = json.dump(['data', response_dict])

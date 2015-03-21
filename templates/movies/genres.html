@@ -8,27 +8,32 @@
     {% if genres %}
         <ul class="movie-list">
 			{% for genre in genres %}
-                <div class="movie movie-first-box col-lg-12 col-md-12">
-				    <li>
+                <li>
+
+                    <div class="movie col-lg-12 col-md-12">
+                    <a name="{{ genre.name }}"></a>
+
                         <h3 class="movie-header"><a href="{% url 'genre' genre.slug %}">{{ genre.name }}</a></h3>
                         {% for g, movie_list in movies.items %}
                             {% if g == genre.name %}
                                 <ul class="movie-list">
                                 {% for m in movie_list %}
-                                    <div class="movie-small-container col-lg-3 col-md-3">
-                                        <div class="comment movie-small">
-                                            <li>
-                                                {% if m.picture %}
-                                                    {% thumbnail m.picture "116x116" crop="center" as im %}
-                                                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                                                    {% endthumbnail %}
-                                                {% else %}
-                                                    <img src="/media/movie_images/default_movie_picture.jpg">
-                                                {% endif %}
-                                                <a href="{% url 'movie' m.slug %}">{{ m.title }}</a>
-                                            </li>
+                                    <li>
+                                        <div class="movie-small-container col-lg-3 col-md-3">
+                                            <div class="comment movie-small">
+
+                                                    {% if m.picture %}
+                                                        {% thumbnail m.picture "116x116" crop="center" as im %}
+                                                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                                        {% endthumbnail %}
+                                                    {% else %}
+                                                        <img src="/media/movie_images/default_movie_picture.jpg">
+                                                    {% endif %}
+                                                    <a href="{% url 'movie' m.slug %}">{{ m.title }}</a>
+
+                                            </div>
                                         </div>
-                                    </div>
+                                    </li>
                                 {% endfor %}
                                 </ul>
                                 <div class="movie-small-footer">
@@ -38,13 +43,28 @@
                         {% endfor %}
 
 
-                    </li>
-                </div>
+
+                    </div>
+                </li>
 			{% endfor %}
         </ul>
 
     {% else %}
         No genres present.
     {% endif %}
+{% endblock %}
+
+{% block sidebar %}
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">Genres</div>
+
+        <ul class="list-group">
+            {% for genre in genres %}
+                <li class="list-group-item"><a href="#{{ genre.name }}">{{ genre }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
 {% endblock %}
 

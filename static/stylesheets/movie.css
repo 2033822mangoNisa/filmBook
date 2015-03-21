@@ -1,4 +1,5 @@
 .movie {
+
     display: block;
     background-color: #ffffff;
     padding: 0 20px;
@@ -79,4 +80,10 @@
 
 .movie-list-genre {
     padding: 10px;
+
+}
+
+.genre-list-item {
+    border-bottom: 1px dotted lightgrey;
+    padding: 5px;
 }

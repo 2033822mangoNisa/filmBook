@@ -35,7 +35,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-fixed-top navbar-inverse">
+<nav class="navbar navbar-static-top navbar-inverse">
     <div class="container">
         <div class="row row-offcanvas row-offcanvas-right" >
             <div class="col-xs-12 col-sm-9 col-lg-10 col-md-10 col-lg-offset-1" >
@@ -68,7 +68,7 @@
 
                     <ul class="nav navbar-nav navbar-right">
 
-                        <li><a href="{% url 'genres' %}">Genres</a></li>
+                        <li><a href="{% url 'genres' %}">Films</a></li>
                         <li><a href="{% url 'actors' %}">Actors</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -111,18 +111,7 @@
             </div>
 
             <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 sidebar-offcanvas" id="sidebar">
-                <div class="list-group">
-                    <a href="#" class="list-group-item active">Link</a>
-                    <a href="#" class="list-group-item">Link</a>
-                    <a href="#" class="list-group-item">Link</a>
-                    <a href="#" class="list-group-item">Link</a>
-                    <a href="#" class="list-group-item">Link</a>
-                    <a href="#" class="list-group-item">Link</a>
-                    <a href="#" class="list-group-item">Link</a>
-                    <a href="#" class="list-group-item">Link</a>
-                    <a href="#" class="list-group-item">Link</a>
-                    <a href="#" class="list-group-item">Link</a>
-                </div>
+                {% block sidebar %}{% endblock %}
             </div><!--/.sidebar-offcanvas-->
 
 

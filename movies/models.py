@@ -2,7 +2,26 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from datetime import datetime
-from sorl.thumbnail import ImageField, get_thumbnail
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    first_name = models.CharField(max_length=128, blank=True)
+    last_name = models.CharField(max_length=128, blank=True)
+    picture = models.ImageField(upload_to='profile_images', default='profile_images/default_user_picture.jpg')
+    info = models.TextField(blank=True)
+    type = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return self.user.username
+
+    def save(self, *args, **kwargs):
+        try:
+            existing = UserProfile.objects.get(user=self.user)
+            self.id = existing.id
+        except UserProfile.DoesNotExist:
+            pass
+        super(UserProfile, self).save(*args, **kwargs)
 
 
 class Genre(models.Model):
@@ -18,9 +37,12 @@ class Genre(models.Model):
 
 
 class Actor(models.Model):
+    user = models.OneToOneField(UserProfile, null=True)
     name = models.CharField(max_length=128)
+    last_name = models.CharField(max_length=128, default='')
     info = models.TextField(blank=True)
     link = models.URLField(blank=True)
+    available = models.CharField(max_length=3, default='no')
     slug = models.SlugField(unique=True, blank=True)
 
     def get_rating(self):
@@ -50,6 +72,23 @@ class Actor(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class Producer(models.Model):
+    user = models.OneToOneField(UserProfile, null=True)
+    first_name = models.CharField(max_length=128)
+    last_name = models.CharField(max_length=128)
+    info = models.TextField(blank=True)
+    link = models.URLField(blank=True)
+
+    def save(self, *args, **kwargs):
+        self.first_name = self.user.first_name
+        self.last_name = self.user.last_name
+        self.info = self.user.info
+        super(Producer, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.user.user.username
 
 
 class Character(models.Model):
@@ -82,6 +121,7 @@ class Movie(models.Model):
     summary = models.TextField()
     date_added = models.DateTimeField()
     link = models.URLField(blank=True)
+    rating = models.FloatField(default=0.0)
     slug = models.SlugField(unique=True, blank=True)
 
     def get_rating(self):
@@ -127,25 +167,6 @@ class Movie(models.Model):
 
     def __unicode__(self):
         return self.title
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User)
-    first_name = models.CharField(max_length=128, blank=True)
-    last_name = models.CharField(max_length=128, blank=True)
-    picture = models.ImageField(upload_to='profile_images', blank=True)
-    type = models.CharField(max_length=128)
-
-    def __unicode__(self):
-        return self.user.username
-
-    def save(self, *args, **kwargs):
-        try:
-            existing = UserProfile.objects.get(user=self.user)
-            self.id = existing.id
-        except UserProfile.DoesNotExist:
-            pass
-        super(UserProfile, self).save(*args, **kwargs)
 
 
 class MovieRating(models.Model):
