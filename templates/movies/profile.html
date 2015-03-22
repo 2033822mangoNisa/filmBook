@@ -10,8 +10,10 @@
     <div class="movie movie-first-box col-lg-12 col-md-12">
         <div class="profile-picture col-lg-4 col-md-4">
             {% if user_profile.picture %}
-
-                <img src="{{ user_profile.picture.url }}" alt="profile picture" />
+                {% thumbnail user_profile.picture "200x200" crop="center" as im %}
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+                
             {% endif %}
         </div>
 

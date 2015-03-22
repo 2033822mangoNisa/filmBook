@@ -33,7 +33,9 @@
 
                     <div class="profile-description col-lg-9 col-md-9">
                         <h3 class="movie-header"><a href="{% url 'movie' movie.slug %}">{{ movie.title }}</a></h3>
-                        <h4>Rating: {{ movie.show_rating }} / 10</h4>
+                        <p>{{ movie.summary }}</p>
+                        <h5><b>Rating: {{ movie.show_rating }} / 10</b></h5>
+                        <h5><b>Producer: <a href="{% url 'profile' movie.user.user.user.username %}">{{ movie.user.first_name }} {{ movie.user.last_name }}</a> </b></h5>
                     </div>
 
 

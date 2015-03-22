@@ -120,7 +120,7 @@ class Movie(models.Model):
     writer = models.CharField(max_length=128, blank=True)
     genres = models.ManyToManyField(Genre)
     characters = models.ManyToManyField(Character, blank=True)
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(Producer, null=True)
     picture = models.ImageField(upload_to='movie_images', default='movie_images/default_movie_picture.jpg')
     summary = models.TextField()
     date_added = models.DateTimeField()
