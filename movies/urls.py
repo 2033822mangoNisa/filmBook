@@ -14,4 +14,5 @@ urlpatterns = patterns('',
                        url(r'^search/$', views.search, name='search'),
                        url(r'^user/(?P<username>[\w\-]+)/$', views.profile, name='profile'),
                        url(r'^rate/$', views.rate, name='rate'),
+                       url(r'^add_to_watchlist/$', views.add_to_watchlist, name='watchlist'),
                        )

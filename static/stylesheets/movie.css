@@ -14,8 +14,11 @@
 
 .movie-header {
     border-bottom: 1px solid lightgrey;
-    padding-bottom: 5px;
+}
+
+.movie-header h2, h3 {
     margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 .comment {

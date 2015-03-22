@@ -11,6 +11,7 @@ class UserProfile(models.Model):
     picture = models.ImageField(upload_to='profile_images', default='profile_images/default_user_picture.jpg')
     info = models.TextField(blank=True)
     type = models.CharField(max_length=128)
+    watchlist = models.ManyToManyField('Movie', null=True, blank=True)
 
     def __unicode__(self):
         return self.user.username
@@ -80,6 +81,9 @@ class Producer(models.Model):
     last_name = models.CharField(max_length=128)
     info = models.TextField(blank=True)
     link = models.URLField(blank=True)
+
+    def get_movies(self):
+        return Movie.objects.filter(user=self.user)
 
     def save(self, *args, **kwargs):
         self.first_name = self.user.first_name

@@ -97,6 +97,7 @@ def movie(request, movie_name_slug):
         # get the movie's comments
         comments = Comment.objects.filter(movie=movie).order_by('-date')
         user_rating = 0
+        already_in = 0
 
         if request.user.is_authenticated():
             user_profile = UserProfile.objects.get(user=request.user)
@@ -109,6 +110,13 @@ def movie(request, movie_name_slug):
 
             if existing_rating is not None:
                 user_rating = existing_rating.rating
+
+            # check if movie is in user's watchlist
+
+            for m in user_profile.watchlist.all():
+                if m.id == movie.id:
+                    already_in = 1
+
         else:
             user_profile = ''
 
@@ -124,6 +132,8 @@ def movie(request, movie_name_slug):
         context_dict['user_profile'] = user_profile
         context_dict['user_rating'] = user_rating
         context_dict['ratings_no'] = ratings_no
+        context_dict['already_in'] = already_in
+
 
         if request.method == 'POST':
             form = CommentForm(request.POST)
@@ -272,7 +282,6 @@ def profile(request, username):
     context_dict = {}
     current_user = User.objects.get(username=username)
     context_dict['current_user'] = current_user
-    #context_dict['user_type'] = None
 
     try:
         user_profile = UserProfile.objects.get(user=current_user)
@@ -280,8 +289,16 @@ def profile(request, username):
             context_dict['user_type'] = 'Member'
         elif user_profile.type == '2':
             context_dict['user_type'] = 'Actor'
+            actor = Actor.objects.get(user=user_profile)
+            movies_played_in = actor.get_movies()
+            context_dict['movies_played_in'] = movies_played_in
+
         elif user_profile.type == '3':
             context_dict['user_type'] = 'Producer'
+            producer = Producer.objects.get(user=user_profile)
+            movies_produced = producer.get_movies()
+            context_dict['movies_produced'] = movies_produced
+
     except:
         user_profile = None
 
@@ -330,3 +347,21 @@ def rate(request):
     # response_json = json.dump(['data', response_dict])
 
     return HttpResponse(new_rating)
+
+
+def add_to_watchlist(request):
+    movie_id = None
+    user_id = None
+
+    if request.method == 'GET':
+        movie_id = request.GET['m_id']
+        user_id = request.GET['u_id']
+
+    movie = Movie.objects.get(id=movie_id)
+    user = User.objects.get(id=user_id)
+    user_profile = UserProfile.objects.get(user=user)
+
+    user_profile.watchlist.add(movie)
+    user_profile.save()
+
+    return HttpResponse('')

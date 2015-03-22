@@ -23,7 +23,10 @@
         </div>
 
         <div class="profile-description col-lg-8 col-md-8">
-            <h2 class="movie-header">{{ movie.title }} <span class="movie-year">({{ movie.year }})</span></h2>
+            <div class="movie-header">
+                <h2>{{ movie.title }} <span class="movie-year">({{ movie.year }})</span></h2>
+            </div>
+
 
             <!-- Genres -->
             <ul class="genres movie-list">
@@ -40,11 +43,8 @@
                 <div class="rating-panel">
                     Your rating:<div class="star_rating" data-average="{{ user_rating }}" data-id="1" data-movieid="{{ movie.id }}" data-userid="{{ user.id }}"></div>
                 </div>
+                <button type="button" id="add_to_watchlist" data-alreadyin={{ already_in }} data-movieid={{ movie.id }} data-userid={{ user.id }} class="btn btn-default btn-xs">Add to watchlist</button>
             {% endif %}
-
-
-
-
 
         </div>
 

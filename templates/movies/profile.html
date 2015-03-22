@@ -16,18 +16,38 @@
         </div>
 
         <div class="profile-description col-lg-8 col-md-8">
-            <h2 class="movie-header">{{ current_user }}</h2><br />
-
-            {% if user_profile %}
-                <p>Type: {{ user_type }}</p>
-                <p>First Name: {{ user_profile.first_name }}</p>
-                <p>Last Name: {{ user_profile.last_name }}</p>
-
-            {% endif %}
-
-
-
+            <h2 class="movie-header">{{ user_profile.first_name }} {{ user_profile.last_name }}</h2><br />
+            <p><b>{{ user_type }}</b></p>
+            <p><b>About me:</b> {{ user_profile.info }}</p>
         </div>
+    </div>
+
+    <div class="movie col-lg-12 col-md-12">
+        <!-- if user is actor -->
+        {% if movies_played_in %}
+            <div class="movie-header">
+                <h3>Movies played in</h3>
+            </div>
+            <ul class="movie-list">
+                {% for movie in movies_played_in %}
+                    <li>{{ movie }}</li>
+                {% endfor %}
+            </ul>
+
+        {% endif %}
+
+        <!-- is user is producer -->
+        {% if movies_produced %}
+            <div class="movie-header">
+                <h3>Movies produced</h3>
+            </div>
+            <ul class="movie-list">
+                {% for movie in movies_produced %}
+                    <li>{{ movie }}</li>
+                {% endfor %}
+            </ul>
+
+        {% endif %}
     </div>
 
 
