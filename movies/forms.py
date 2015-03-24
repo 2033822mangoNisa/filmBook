@@ -7,20 +7,24 @@ class MovieForm(forms.ModelForm):
 
     character_list = [(c.id, c.name) for c in Character.objects.all()]
 
-    title = forms.CharField(max_length=128, help_text="Title: ")
-    year = forms.IntegerField(help_text="Year: ")
-    producer = forms.CharField(max_length=128, help_text="Producer: ")
-    writer = forms.CharField(max_length=128, help_text="Writer: ")
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), help_text="Title: ")
+    year = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}), help_text="Year: ")
+
     genres = forms.ModelMultipleChoiceField(
         queryset=Genre.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        help_text="Genres: "
+        widget=forms.CheckboxSelectMultiple(),
+        help_text="Genres: ",
+
     )
+
+    summary = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '6', 'cols': '50'}), help_text='Summary: ')
+    link = forms.URLField(widget=forms.TextInput(attrs={'class': 'form-control'}), help_text='Link: ', required=False)
+    picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}), help_text='Picture: ', required=False)
 
     class Meta:
 
         model = Movie
-        fields = ('title', 'year', 'producer', 'writer', 'genres', )
+        fields = ('title', 'year', 'genres', 'summary', 'link', 'picture',)
 
 
 class CharacterForm(forms.ModelForm):
@@ -49,11 +53,12 @@ class UserProfileForm(forms.ModelForm):
 
     type = forms.ChoiceField(
         choices=USER_TYPES,
-        help_text="Type: "
+        help_text="Type: ",
+        required=False
     )
     first_name = forms.CharField(max_length=128, help_text='First Name: ', required=False)
     last_name = forms.CharField(max_length=128, help_text='Last Name: ', required=False)
 
     class Meta:
         model = UserProfile
-        fields = ('type', 'first_name', 'last_name', 'picture', )
+        fields = ('type', 'first_name', 'last_name', 'picture', 'info')

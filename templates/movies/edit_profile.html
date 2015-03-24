@@ -1,0 +1,99 @@
+{% extends 'movies/base.html' %}
+
+{% block body_block %}
+
+	<form class="form-horizontal" id="category_form" method="post" action="{% url 'edit_profile' user.username %}" enctype="multipart/form-data">
+
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <div class="col-lg-offset-2">
+            <h2 class="form-signin-heading">Edit your profile</h2>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-lg-2 control-label" for="id_firstname">First name:</label>
+            <div class="col-sm-9 col-xs-12 col-lg-9">
+                <input class="form-control" id="id_firstname" type="text" name="first_name" value="{{ user_profile.first_name }}" />
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-lg-2 control-label" for="id_lastname">First name:</label>
+            <div class="col-sm-9 col-xs-12 col-lg-9">
+                <input class="form-control" id="id_lastname" type="text" name="last_name" value="{{ user_profile.last_name }}" />
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-lg-2 control-label" for="id_info">First name:</label>
+            <div class="col-sm-9 col-xs-12 col-lg-9">
+                <textarea class="form-control" rows="6" id="id_info" name="info" >{{ user_profile.info }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-lg-2 control-label" for="id_picture">Picture:</label>
+            <div class="col-sm-9 col-xs-12 col-lg-9">
+                <input class="form-control" id="id_picture" type="file" name="picture" accept="image/*" />
+            </div>
+        </div>
+
+        <div class="col-lg-offset-2">
+            <button type="submit" class="btn btn-default">Save</button>
+        </div>
+
+
+
+
+
+
+    </form>
+
+{% endblock %}
+
+{% block sidebar %}
+    {% if user == user_profile.user %}
+        {% if movies_produced %}
+            <div class="panel panel-primary">
+                <div class="panel-heading">My films</div>
+
+                <div class="list-group">
+                    {% for movie in movies_produced %}
+                        <a class="list-group-item" href="{% url 'movie' movie.slug %}">{{ movie }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if movies_played_in %}
+            <div class="panel panel-primary">
+                <div class="panel-heading">Films I played in</div>
+
+                <div class="list-group">
+                    {% for movie in movies_played_in %}
+                        <a class="list-group-item" href="{% url 'movie' movie.slug %}">{{ movie }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">My Watchlist</div>
+
+            <div class="list-group">
+                {% for movie in watchlist %}
+                    <a class="list-group-item" href="{% url 'movie' movie.slug %}">{{ movie }} </a>
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+
+    {% endif %}
+
+
+{% endblock %}

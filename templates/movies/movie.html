@@ -60,7 +60,7 @@
         <ul class="movie-list">
             {% for character, actor in character_actor.items  %}
 
-                <li><a href="{% url 'actor' actor.slug %}" >{{ actor.name }}</a> - {{ character.name }}</li>
+                <li><a href="{% url 'profile' actor.user.user.username %}" >{{ actor.user.first_name }} {{ actor.user.last_name }}</a> - {{ character.name }}</li>
             {% endfor %}
         </ul>
     </div>
@@ -89,7 +89,7 @@
         {% if comments %}
             {% for comment in comments %}
                 <div class="comment">
-                    Posted by: <b><a href="{% url 'profile' comment.user.username %}">{{ comment.user }}</a> </b> <br />
+                    Posted by: <b><a href="{% url 'profile' comment.user.user.username %}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a> </b> <br />
                     {{ comment.comment }} <br />
                     {{ comment.date }} <br />
 

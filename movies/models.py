@@ -19,6 +19,7 @@ class UserProfile(models.Model):
     def save(self, *args, **kwargs):
         try:
             existing = UserProfile.objects.get(user=self.user)
+            self.type = existing.type
             self.id = existing.id
         except UserProfile.DoesNotExist:
             pass
@@ -44,7 +45,6 @@ class Actor(models.Model):
     info = models.TextField(blank=True)
     link = models.URLField(blank=True)
     available = models.CharField(max_length=3, default='no')
-    slug = models.SlugField(unique=True, blank=True)
 
     def get_rating(self):
         ratings = ActorRating.objects.filter(actor=self)
@@ -67,10 +67,6 @@ class Actor(models.Model):
         characters = self.get_characters()
         return Movie.objects.filter(characters=characters)
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(Actor, self).save(*args, **kwargs)
-
     def __unicode__(self):
         return self.name
 
@@ -83,7 +79,7 @@ class Producer(models.Model):
     link = models.URLField(blank=True)
 
     def get_movies(self):
-        return Movie.objects.filter(user=self.user)
+        return Movie.objects.filter(user=self)
 
     def save(self, *args, **kwargs):
         self.first_name = self.user.first_name
@@ -116,8 +112,6 @@ class Character(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=128)
     year = models.IntegerField(default=0)
-    producer = models.CharField(max_length=128, blank=True)
-    writer = models.CharField(max_length=128, blank=True)
     genres = models.ManyToManyField(Genre)
     characters = models.ManyToManyField(Character, blank=True)
     user = models.ForeignKey(Producer, null=True)
@@ -194,7 +188,7 @@ class ActorRating(models.Model):
 class Comment(models.Model):
     comment = models.CharField(max_length=256)
     date = models.DateTimeField(null=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(UserProfile)
     movie = models.ForeignKey(Movie)
 
 

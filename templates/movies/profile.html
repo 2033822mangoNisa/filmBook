@@ -7,21 +7,34 @@
 
 {% block body_block %}
 
+
     <div class="movie movie-first-box col-lg-12 col-md-12">
+
         <div class="profile-picture col-lg-4 col-md-4">
             {% if user_profile.picture %}
                 {% thumbnail user_profile.picture "200x200" crop="center" as im %}
                     <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                 {% endthumbnail %}
-                
+
             {% endif %}
         </div>
 
         <div class="profile-description col-lg-8 col-md-8">
-            <h2 class="movie-header">{{ user_profile.first_name }} {{ user_profile.last_name }}</h2><br />
+            <div class="col-lg-12 col-md-12 movie-header">
+                <h2 style="padding: 0;" class="col-lg-11 col-md-11">{{ user_profile.first_name }} {{ user_profile.last_name }}</h2>
+                {% if user_profile == current_user_profile %}
+                    <a href="{% url 'edit_profile' user.username %}" ><span style="margin-top: 15px;" class="glyphicon glyphicon-pencil"></span></a>
+                {% endif %}
+
+
+            </div>
             <p><b>{{ user_type }}</b></p>
-            <p><b>About me:</b> {{ user_profile.info }}</p>
+            <p class="shown_field">
+                <b>About me:</b> {{ user_profile.info }}
+            </p>
+
         </div>
+
     </div>
 
     <div class="movie col-lg-12 col-md-12">
@@ -32,7 +45,7 @@
             </div>
             <ul class="movie-list">
                 {% for movie in movies_played_in %}
-                    <li>{{ movie }}</li>
+                    <li><a href="{% url 'movie' movie.slug %}">{{ movie }}</a></li>
                 {% endfor %}
             </ul>
 
@@ -45,15 +58,99 @@
             </div>
             <ul class="movie-list">
                 {% for movie in movies_produced %}
-                    <li>{{ movie }}</li>
+                    <li><a href="{% url 'movie' movie.slug %}">{{ movie }}</a></li>
                 {% endfor %}
             </ul>
 
         {% endif %}
+
+    </div>
+
+    <div class="movie col-lg-12 col-md-12">
+        <div class="movie-header">
+            <h3>Ratings from this user</h3>
+        </div>
+
+        <div class="col-lg-5 col-md-5">
+            <ul class="movie-list">
+                {% for rating in my_ratings %}
+                    <li><a href="{% url 'movie' rating.movie.slug %}">{{ rating.movie }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-lg-7 col-md-7">
+            <ul class="movie-list">
+                {% for rating in my_ratings %}
+                    <li><span class="badge">{{ rating.rating }}</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="movie col-lg-12 col-md-12">
+        <div class="movie-header">
+            <h3>Comments from this user</h3>
+        </div>
+
+
+            <ul class="movie-list">
+                {% for comment in my_comments %}
+                    <div class="comment">
+                        Posted on: <a href="{% url 'movie' comment.movie.slug %}">{{ comment.movie }}</a> <br />
+                        {{ comment.comment }} <br />
+                        <b>{{ comment.date }} </b>
+                    </div>
+                {% endfor %}
+            </ul>
+
+
     </div>
 
 
 
+{% endblock %}
+
+{% block sidebar %}
+    {% if user == user_profile.user %}
+        {% if movies_produced %}
+            <div class="panel panel-primary">
+                <div class="panel-heading">My films</div>
+
+                <div class="list-group">
+                    {% for movie in movies_produced %}
+                        <a class="list-group-item" href="{% url 'movie' movie.slug %}">{{ movie }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if movies_played_in %}
+            <div class="panel panel-primary">
+                <div class="panel-heading">Films I played in</div>
+
+                <div class="list-group">
+                    {% for movie in movies_played_in %}
+                        <a class="list-group-item" href="{% url 'movie' movie.slug %}">{{ movie }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">My Watchlist</div>
+
+            <div class="list-group">
+                {% for movie in watchlist %}
+                    <a class="list-group-item" href="{% url 'movie' movie.slug %}">{{ movie }} </a>
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+
+    {% endif %}
 
 
 {% endblock %}

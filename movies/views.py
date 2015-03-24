@@ -142,7 +142,7 @@ def movie(request, movie_name_slug):
                 comment = form.save(commit=False)
                 comment.movie = movie
                 comment.date = datetime.datetime.now()
-                comment.user = request.user
+                comment.user = user_profile
 
                 comment.save()
                 return HttpResponseRedirect('/movies/movie/' + movie_name_slug)
@@ -190,7 +190,15 @@ def add_movie(request):
         # Have we been provided with a valid form?
         if movie_form.is_valid():
             # Save the new category to the database.
-            movie = movie_form.save(commit=True)
+            user_profile = UserProfile.objects.get(user=request.user)
+            producer = Producer.objects.get(user=user_profile)
+            movie = movie_form.save(commit=False)
+            movie.user = producer
+
+            if 'picture' in request.FILES:
+                movie.picture = request.FILES['picture']
+
+            movie.save()
 
             return HttpResponseRedirect('/movies/' + movie.slug + '/add_character/')
         else:
@@ -242,11 +250,12 @@ def add_character(request, movie_slug):
 
 def user_profile_registration(request, username):
 
+    USER_TYPES = {1: 'Member', 2: 'Actor', 3: 'Producer'}
+
     if request.method == 'POST':
         form = UserProfileForm(request.POST)
 
         if form.is_valid():
-
             user = User.objects.get(username=username)
             profile = form.save(commit=False)
             profile.user = user
@@ -255,6 +264,15 @@ def user_profile_registration(request, username):
                 profile.picture = request.FILES['picture']
 
             profile.save()
+
+            user_profile = UserProfile.objects.get(user=request.user)
+
+            if int(user_profile.type) == 2:
+                Actor.objects.get_or_create(user=user_profile, name=user_profile.first_name,
+                                            last_name=user_profile.last_name, info=user_profile.info)
+            elif int(user_profile.type) == 3:
+                Producer.objects.get_or_create(user=user_profile, first_name=user_profile.first_name,
+                                               last_name=user_profile.last_name, info=user_profile.info)
 
             return HttpResponseRedirect('/movies/')
 
@@ -265,7 +283,54 @@ def user_profile_registration(request, username):
 
         form = UserProfileForm()
 
-    return render(request, 'movies/user_profile_form.html', {'form': form, 'username': username})
+    return render(request, 'movies/user_profile_form.html', {'form': form, 'username': username, 'types': USER_TYPES})
+
+
+def edit_profile(request, username):
+    context_dict = {}
+    user = User.objects.get(username=username)
+    user_profile = UserProfile.objects.get(user=user)
+
+    if user_profile.type == '2':
+        actor = Actor.objects.get(user=user_profile)
+        movies_played_in = actor.get_movies()
+        context_dict['movies_played_in'] = movies_played_in
+    elif user_profile.type == '3':
+        producer = Producer.objects.get(user=user_profile)
+        movies_produced = producer.get_movies()
+        context_dict['movies_produced'] = movies_produced
+
+    watchlist = user_profile.watchlist.all()[:10]
+    context_dict['watchlist'] = watchlist
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST)
+
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = user
+
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
+            else:
+                profile.picture = user_profile.picture
+
+            profile.save()
+
+            return HttpResponseRedirect('/movies/user/' + username)
+
+        else:
+            print form.errors
+
+    else:
+
+        form = UserProfileForm()
+
+    context_dict['form'] = form
+    context_dict['username'] = username
+    context_dict['user_profile'] = user_profile
+
+    return render(request, 'movies/edit_profile.html', context_dict)
 
 
 def search(request):
@@ -279,30 +344,41 @@ def search(request):
 
 @login_required
 def profile(request, username):
+
     context_dict = {}
-    current_user = User.objects.get(username=username)
+    current_user = User.objects.get(username=request.user.username)
+    current_user_profile = UserProfile.objects.get(user=current_user)
     context_dict['current_user'] = current_user
 
-    try:
-        user_profile = UserProfile.objects.get(user=current_user)
-        if user_profile.type == '1':
-            context_dict['user_type'] = 'Member'
-        elif user_profile.type == '2':
-            context_dict['user_type'] = 'Actor'
-            actor = Actor.objects.get(user=user_profile)
-            movies_played_in = actor.get_movies()
-            context_dict['movies_played_in'] = movies_played_in
+    user = User.objects.get(username=username)
+    user_profile = UserProfile.objects.get(user=user)
+    if user_profile.type == '1':
+        context_dict['user_type'] = 'Member'
+    elif user_profile.type == '2':
+        context_dict['user_type'] = 'Actor'
+        actor = Actor.objects.get(user=user_profile)
+        movies_played_in = actor.get_movies()
+        context_dict['movies_played_in'] = movies_played_in
 
-        elif user_profile.type == '3':
-            context_dict['user_type'] = 'Producer'
-            producer = Producer.objects.get(user=user_profile)
-            movies_produced = producer.get_movies()
-            context_dict['movies_produced'] = movies_produced
+    elif user_profile.type == '3':
+        context_dict['user_type'] = 'Producer'
+        producer = Producer.objects.get(user=user_profile)
+        movies_produced = producer.get_movies()
+        context_dict['movies_produced'] = movies_produced
 
-    except:
-        user_profile = None
+    watchlist = current_user_profile.watchlist.all()[:10]
+    context_dict['watchlist'] = watchlist
+
+    my_ratings = MovieRating.objects.filter(user=user_profile)
+    context_dict['my_ratings'] = my_ratings
+
+    my_comments = Comment.objects.filter(user=user_profile).order_by('-date')[:5]
+    context_dict['my_comments'] = my_comments
 
     context_dict['user_profile'] = user_profile
+    context_dict['current_user_profile'] = current_user_profile
+
+    print context_dict
 
     return render(request, 'movies/profile.html', context_dict)
 
@@ -365,3 +441,6 @@ def add_to_watchlist(request):
     user_profile.save()
 
     return HttpResponse('')
+
+
+

@@ -2,23 +2,65 @@
 
 {% block body_block %}
 
-	<h1>Fill in your user details</h1>
-
-	<form id="category_form" method="post" action="{% url 'user_profile_details' user.username %}" enctype="multipart/form-data">
+	<form class="form-horizontal" id="category_form" method="post" action="{% url 'user_profile_details' user.username %}" enctype="multipart/form-data">
 
         {% csrf_token %}
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
         {% endfor %}
 
-        {% for field in form.visible_fields %}
-            {{ field.errors }}
-            {{ field.help_text }}
-            {{ field }}
-            <br />
-        {% endfor %}
+        <div class="col-lg-offset-2">
+            <h2 class="form-signin-heading">Fill in your details</h2>
+        </div>
 
-        <input type="submit" name="submit" value="Save" /><br />
+        <div class="form-group" >
+            <label class="col-lg-2 control-label" for="id_type">Type: </label>
+            <div class="col-sm-9 col-xs-12 col-lg-9">
+                <select class="form-control" id="id_type" name="type" >
+                    {% for value, name in types.items %}
+                        <option value="{{ value }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-lg-2 control-label" for="id_firstname">First name: </label>
+            <div class="col-sm-9 col-xs-12 col-lg-9">
+                <input class="form-control" id="id_firstname" type="text" name="first_name" value="{{ user_profile.first_name }}" />
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-lg-2 control-label" for="id_lastname">First name: </label>
+            <div class="col-sm-9 col-xs-12 col-lg-9">
+                <input class="form-control" id="id_lastname" type="text" name="last_name" value="{{ user_profile.last_name }}" />
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-lg-2 control-label" for="id_info">First name: </label>
+            <div class="col-sm-9 col-xs-12 col-lg-9">
+                <textarea class="form-control" rows="6" id="id_info" name="info" >{{ user_profile.info }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-lg-2 control-label" for="id_picture">Picture: </label>
+            <div class="col-sm-9 col-xs-12 col-lg-9">
+                <input class="form-control" id="id_picture" type="file" name="picture" accept="image/*" />
+            </div>
+        </div>
+
+        <div class="col-lg-offset-2">
+            <button type="submit" class="btn btn-default">Save</button>
+        </div>
+
+
+
+
+
+
 
     </form>
 

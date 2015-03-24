@@ -56,14 +56,14 @@
 
 {% block sidebar %}
 
-    <div class="panel panel-primary">
+    <div class="panel panel-primary" >
         <div class="panel-heading">Genres</div>
 
-        <ul class="list-group">
+        <div class="list-group">
             {% for genre in genres %}
-                <li class="list-group-item"><a href="#{{ genre.name }}">{{ genre }}</a></li>
+                <a class="list-group-item" href="#{{ genre.name }}">{{ genre }}</a>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 
 {% endblock %}

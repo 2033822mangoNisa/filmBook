@@ -53,25 +53,22 @@
     <div class="panel panel-primary">
         <div class="panel-heading">Top Movies</div>
 
-        <ul class="list-group">
+        <div class="list-group">
             {% for movie in top_movies %}
-                <li class="list-group-item">
-                    <a href="{% url 'movie' movie.slug %}">{{ movie }}</a>
-                    <span class="badge">{{ movie.show_rating }}</span>
-                </li>
+                <a class="list-group-item" href="{% url 'movie' movie.slug %}">{{ movie }} <span class="badge">{{ movie.show_rating }}</span></a>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 
 
     <div class="panel panel-primary">
         <div class="panel-heading">Genres</div>
 
-        <ul class="list-group">
+        <div class="list-group">
             {% for genre in genres %}
-                <li class="list-group-item"><a href="{% url 'genre' genre.slug %}">{{ genre }}</a></li>
+                <a class="list-group-item" href="{% url 'genre' genre.slug %}">{{ genre }}</a>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 
 {% endblock %}

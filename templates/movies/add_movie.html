@@ -2,9 +2,17 @@
 
 {% block body_block %}
 
-	<h1>Add a Movie</h1>
+    <style>
+        ul {
+            padding: 0;
+        }
+    </style>
 
-	<form id="category_form" method="post" action="{% url 'add_movie' %}">
+	<form class="form-horizontal" id="category_form" method="post" action="{% url 'add_movie' %}" enctype="multipart/form-data">
+
+        <div class="col-lg-offset-2">
+            <h2 class="form-signin-heading">Add a new film</h2>
+        </div>
 
         {% csrf_token %}
         {% for hidden in movie_form.hidden_fields %}
@@ -12,13 +20,20 @@
         {% endfor %}
 
         {% for field in movie_form.visible_fields %}
-            {{ field.errors }}
-            {{ field.help_text }}
-            {{ field }}
-            <br />
+            <div class="form-group" >
+                <label class="col-lg-2 control-label">{{ field.help_text }} </label>
+                <div class="col-sm-9 col-xs-12 col-lg-9">
+                    {{ field.errors }}
+                    {{ field }}
+                </div>
+            </div>
         {% endfor %}
 
-        <input type="submit" name="submit" value="Add Movie" /><br />
+        <div class="col-lg-offset-2">
+            <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+        </div>
+
+
 
     </form>
 
