@@ -11,7 +11,7 @@
 	<form class="form-horizontal" id="category_form" method="post" action="{% url 'add_movie' %}" enctype="multipart/form-data">
 
         <div class="col-lg-offset-2">
-            <h2 class="form-signin-heading">Step 1: Fill in the general details</h2>
+            <h2 class="form-signin-heading">Edit your movie</h2>
         </div>
 
         {% csrf_token %}
@@ -30,10 +30,14 @@
         {% endfor %}
 
         <div class="col-lg-offset-2">
-            <button type="submit" class="btn btn-primary" name="submit">Next step</button>
+
+            <a class="btn btn-primary" href="{% url 'add_character' movie.slug %}">Edit characters</a><br />
+            <a class="btn btn-primary" href="{% url 'add_actor' movie.slug %}">Edit actors</a>
         </div>
 
     </form>
 
-{% endblock %}
 
+
+
+{% endblock %}

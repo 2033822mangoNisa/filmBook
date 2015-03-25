@@ -35,16 +35,20 @@
                 {% endfor %}
             </ul>
 
+            <h4 style="padding: 0; margin-bottom:0;" class="col-lg-12">Producer: <a href="{% url 'profile' movie.user.user.user.username %}">{{ movie.user.user.first_name }} {{ movie.user.user.last_name }}</a></h4>
 
-            <div class="rating-title"><h3>Rating: <span id="rating">{{ rating }}</span> / 10.0</h3> by {{ ratings_no }} users</div>
+            <div class="rating-title"><h3>Rating: <span id="rating">{{ rating }}</span> / 10.0 by {{ ratings_no }} users</h3>
+            </div>
 
             <!-- Rating for user -->
             {% if user.is_authenticated %}
                 <div class="rating-panel">
                     Your rating:<div class="star_rating" data-average="{{ user_rating }}" data-id="1" data-movieid="{{ movie.id }}" data-userid="{{ user.id }}"></div>
                 </div>
-                <button type="button" id="add_to_watchlist" data-alreadyin={{ already_in }} data-movieid={{ movie.id }} data-userid={{ user.id }} class="btn btn-default btn-xs">Add to watchlist</button>
+                <button style="margin: 10px 0;" type="button" id="add_to_watchlist" data-alreadyin="{{ already_in }}" data-movieid="{{ movie.id }}" data-userid="{{ user.id }}" class="btn btn-default btn-xs">Add to watchlist</button>
             {% endif %}
+
+
 
         </div>
 
@@ -88,12 +92,16 @@
 
         {% if comments %}
             {% for comment in comments %}
-                <div class="comment">
-                    Posted by: <b><a href="{% url 'profile' comment.user.user.username %}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a> </b> <br />
-                    {{ comment.comment }} <br />
-                    {{ comment.date }} <br />
-
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Posted by: <b><a href="{% url 'profile' comment.user.user.username %}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a> </b></h3>
+                    </div>
+                    <div class="panel-body">
+                        {{ comment.comment }}
+                    </div>
+                    <div class="panel-footer">{{ comment.date }}</div>
                 </div>
+
             {% endfor %}
         {% endif %}
 

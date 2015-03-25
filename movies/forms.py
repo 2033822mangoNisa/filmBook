@@ -29,8 +29,9 @@ class MovieForm(forms.ModelForm):
 
 class CharacterForm(forms.ModelForm):
 
-    name = forms.CharField(max_length=128, help_text="Name: ")
-    desc = forms.Textarea()
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), help_text="Name: ")
+    desc = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '6', 'cols': '50'}),
+                           help_text='Description: ', required=False)
 
     class Meta:
 
@@ -62,3 +63,4 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('type', 'first_name', 'last_name', 'picture', 'info')
+

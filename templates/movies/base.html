@@ -69,7 +69,7 @@
                     <ul class="nav navbar-nav navbar-right">
 
                         <li><a href="{% url 'genres' %}">Films</a></li>
-                        <li><a href="{% url 'actors' %}">Actors</a></li>
+                        <li><a href="{% url 'actors' %}">People</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <span class="glyphicon glyphicon-user"></span>
@@ -78,7 +78,7 @@
                                     {% if user.is_authenticated %}
                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile' user.username%}">Profile</a></li>
                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'auth_logout' %}?next=/movies/">Logout</a></li>
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'add_movie' %}?next=/movies/">Add a Movie</a></li>
+
                                     {% else %}
                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'registration_register' %}">Register Here</a></li>
                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'auth_login' %}">Login</a></li>
@@ -134,6 +134,7 @@
 <script type="text/javascript" src={% static 'js/jRating.jquery.js' %}></script>
 <script type="text/javascript" src={% static 'js/movieRating.js' %}></script>
 <script type="text/javascript" src={% static 'js/addToWatchlist.js' %}></script>
+<script type="text/javascript" src={% static 'js/assignActor.js' %}></script>
 
 
 

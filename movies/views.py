@@ -12,7 +12,7 @@ def index(request):
     genres = Genre.objects.all().order_by('name')
     movies = Movie.objects.order_by('title')
 
-    movies_ratings = Movie.objects.all().order_by('-rating')
+    movies_ratings = Movie.objects.all().order_by('-rating')[:10]
 
     context_dict = {'genres': genres, 'movies': movies, 'top_movies': movies_ratings}
 
@@ -95,7 +95,7 @@ def movie(request, movie_name_slug):
         ratings_no = ratings['ratings_no']
 
         # get the movie's comments
-        comments = Comment.objects.filter(movie=movie).order_by('-date')
+        comments = Comment.objects.filter(movie=movie).order_by('-date')[:5]
         user_rating = 0
         already_in = 0
 
@@ -183,14 +183,13 @@ def actor(request, actor_name_slug):
 
 def add_movie(request):
 
-    # A HTTP POST?
+    user_profile = UserProfile.objects.get(user=request.user)
+
     if request.method == 'POST':
         movie_form = MovieForm(request.POST)
 
-        # Have we been provided with a valid form?
         if movie_form.is_valid():
-            # Save the new category to the database.
-            user_profile = UserProfile.objects.get(user=request.user)
+
             producer = Producer.objects.get(user=user_profile)
             movie = movie_form.save(commit=False)
             movie.user = producer
@@ -206,15 +205,13 @@ def add_movie(request):
             print movie_form.errors
 
     else:
-        # If the request was not a POST, display the form to enter details.
         movie_form = MovieForm()
 
-    # Bad form (or form details), no form supplied...
-    # Render the form with error messages (if any).
-    return render(request, 'movies/add_movie.html', {'movie_form': movie_form})
+    return render(request, 'movies/add_movie.html', {'movie_form': movie_form, 'user_profile': user_profile})
 
 
 def add_character(request, movie_slug):
+    user_profile = UserProfile.objects.get(user=request.user)
 
     movie = Movie.objects.get(slug=movie_slug)
     characters = Character.objects.filter(movie__title=movie.title)
@@ -245,7 +242,52 @@ def add_character(request, movie_slug):
         form = CharacterForm()
 
     return render(request, 'movies/add_character.html', {'form': form, 'movie': movie, 'characters': characters,
-                                                         'character_actor': character_actor})
+                                                         'character_actor': character_actor,
+                                                         'user_profile': user_profile})
+
+
+def add_actor(request, movie_slug):
+    movie = Movie.objects.get(slug=movie_slug)
+    characters = Character.objects.filter(movie__title=movie.title)
+    actors = movie.get_actors()
+    user_profile = UserProfile.objects.get(user=request.user)
+
+    # build a dictionary of form 'character':'actor'
+    character_actor = {}
+    for i in range(len(characters)):
+        if i < len(actors):
+            character_actor[characters[i]] = actors[i]
+        else:
+            character_actor[characters[i]] = ''
+
+    all_actors = Actor.objects.all()
+    actor_options = {}
+    for a in all_actors:
+        actor_options[a.id] = a.name + ' ' + a.last_name
+
+    return render(request, 'movies/add_actor.html', {'character_actor': character_actor, 'actor_options': actor_options,
+                                                     'movie': movie, 'user_profile': user_profile})
+
+
+def assign_actor(request):
+    character_id = None
+    actor_id = None
+    actor = None
+    movie = None
+
+    if request.method == 'GET':
+        character_id = int(request.GET['c_id'])
+        actor_id = int(request.GET['a_id'])
+        movie_id = int(request.GET['m_id'])
+
+        character = Character.objects.get(id=character_id)
+        actor = Actor.objects.get(id=actor_id)
+        movie = Movie.objects.get(id=movie_id)
+
+        character.actor = actor
+        character.save()
+
+    return HttpResponse(actor.user.first_name)
 
 
 def user_profile_registration(request, username):
@@ -443,4 +485,31 @@ def add_to_watchlist(request):
     return HttpResponse('')
 
 
+def edit_movie(request, movie_slug):
+    user_profile = UserProfile.objects.get(user=request.user)
+    movie = Movie.objects.get(slug=movie_slug)
 
+    if request.method == 'POST':
+        movie_form = MovieForm(request.POST)
+
+        if movie_form.is_valid():
+
+            producer = Producer.objects.get(user=user_profile)
+            movie = movie_form.save(commit=False)
+            movie.user = producer
+
+            if 'picture' in request.FILES:
+                movie.picture = request.FILES['picture']
+
+            movie.save()
+
+            return HttpResponseRedirect('/movies/' + movie.slug + '/add_character/')
+        else:
+            # The supplied form contained errors - just print them to the terminal.
+            print movie_form.errors
+
+    else:
+        movie_form = MovieForm()
+
+    return render(request, 'movies/edit_movie.html', {'movie_form': movie_form, 'user_profile': user_profile,
+                                                      'movie': movie})

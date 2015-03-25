@@ -1,0 +1,60 @@
+{% extends 'movies/base.html' %}
+
+{% block body_block %}
+
+
+        <div class="col-lg-offset-2">
+            <h2 class="form-signin-heading">Step 3: Assign actors to characters</h2>
+        </div>
+
+        {% if movie %}
+            <div class="form-group" >
+                <div class="col-lg-offset-2 col-sm-9 col-xs-12 col-lg-9">
+                    <ul style="padding: 0;">
+                    {% for character, actor in character_actor.items  %}
+                        {% if actor %}
+                            <li class="col-lg-12" style="padding: 0; margin: 5px 0;">
+                                <label class="col-lg-5 control-label">
+                                    {{ character.name }}:
+                                </label>
+                                <div class="col-lg-7">
+                                    <a href="{% url 'profile' character.actor.user.user.username %}" >{{ actor.name }}</a>
+                                </div>
+                            </li>
+
+                        {% else %}
+                            <li class="col-lg-12" style="padding: 0; margin: 5px 0;">
+                                <label class="col-lg-5 control-label" >
+                                    {{ character.name }}:
+                                </label>
+                                <div id="d{{ character.id }}" class="col-lg-7">
+                                    <div class="input-group">
+                                        <select id="s{{ character.id }}" class="form-control" name="type" >
+                                            {% for value, name in actor_options.items %}
+                                                <option value="{{ value }}">{{ name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                          <span class="input-group-btn">
+                                            <button data-characterid="{{ character.id }}" data-movieid="{{ movie.id }}" class="assign btn btn-default" type="button">Add</button>
+                                          </span>
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="col-lg-offset-2">
+            <a class="btn btn-primary" href="{% url 'profile' user.username %}">Finish</a>
+
+        </div>
+
+
+
+
+
+
+{% endblock %}

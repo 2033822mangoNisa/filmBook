@@ -2,22 +2,28 @@
 
 {% block body_block %}
 
-	<h1>Add Characters</h1>
+	<form class="form-horizontal" id="character_form" method="post" action="{% url 'add_character' movie.slug %}">
+        <div class="col-lg-offset-2">
+            <h2 class="form-signin-heading">Step 2: Add characters to your film</h2>
+        </div>
 
-    {% if movie %}
-        <ul>
-            {% for character, actor in character_actor.items  %}
-                {% if actor %}
+        {% if movie %}
+            <div class="form-group" >
+                <label class="col-lg-2 control-label">Existing characters: </label>
+                <div class="col-sm-9 col-xs-12 col-lg-9">
+                    <ul style="padding: 0;">
+                    {% for character, actor in character_actor.items  %}
+                        {% if actor %}
 
-                    <li>{{ character.name }} - <a href="{% url 'actor' actor.slug %}" >{{ actor.name }}</a></li>
-                {% else %}
-                    <li>{{ character.name }}</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-	<form id="character_form" method="post" action="{% url 'add_character' movie.slug %}">
+                            <li>{{ character.name }} - <a href="{% url 'profile' character.actor.user.user.username %}" >{{ actor.name }}</a></li>
+                        {% else %}
+                            <li>{{ character.name }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
 
         {% csrf_token %}
         {% for hidden in form.hidden_fields %}
@@ -25,13 +31,24 @@
         {% endfor %}
 
         {% for field in form.visible_fields %}
-            {{ field.errors }}
-            {{ field.help_text }}
-            {{ field }}
-            <br />
+            <div class="form-group" >
+                <label class="col-lg-2 control-label">{{ field.help_text }} </label>
+                <div class="col-sm-9 col-xs-12 col-lg-9">
+                    {{ field.errors }}
+                    {{ field }}
+                </div>
+            </div>
         {% endfor %}
 
-        <input type="submit" name="submit" value="Add Character" /><br />
+        <div class="col-lg-offset-2">
+            <button type="submit" class="btn btn-primary" name="submit">Add</button>
+
+            <a style="float:right; margin-right: 55px; " class="btn btn-primary" href="{% url 'add_actor' movie.slug %}">Next Step</a>
+            <a style="float:right; " class="btn btn-primary" href="{% url 'add_movie' %}">Previous Step</a>
+
+        </div>
+
+
 
     </form>
 

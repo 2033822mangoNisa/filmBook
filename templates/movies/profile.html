@@ -119,8 +119,12 @@
 
                 <div class="list-group">
                     {% for movie in movies_produced %}
-                        <a class="list-group-item" href="{% url 'movie' movie.slug %}">{{ movie }}</a>
+                        <div class="list-group-item">
+                            <a href={% url 'movie' movie.slug %}>{{ movie }} </a>
+                            <a href="{% url 'edit_movie' movie.slug %}">  <span style="float: right;" class="glyphicon glyphicon-pencil"></span></a>
+                        </div>
                     {% endfor %}
+                        <a class="list-group-item" href="{% url 'add_movie' %}"><span class="glyphicon glyphicon-plus"></span> Add a new movie</a>
                 </div>
             </div>
         {% endif %}
