@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from movies.models import Movie, Actor, Character, Genre, Comment, UserProfile
+from movies.models import Movie, Actor, Character, Genre, Comment, UserProfile, Notification
 
 
 class MovieForm(forms.ModelForm):
@@ -64,3 +64,11 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ('type', 'first_name', 'last_name', 'picture', 'info')
 
+
+class NotificationForm(forms.ModelForm):
+
+    message = forms.CharField(widget=forms.Textarea())
+
+    class Meta:
+        model = Notification
+        fields = ('message', )

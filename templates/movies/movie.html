@@ -63,10 +63,18 @@
         <h3 class="movie-header">Cast</h3>
         <ul class="movie-list">
             {% for character, actor in character_actor.items  %}
-
-                <li><a href="{% url 'profile' actor.user.user.username %}" >{{ actor.user.first_name }} {{ actor.user.last_name }}</a> - {{ character.name }}</li>
+                {% if actor %}
+                    <li>{{ character.name }} - <a href="{% url 'profile' actor.user.user.username %}" >{{ actor.user.first_name }} {{ actor.user.last_name }}</a></li>
+                {% else %}
+                    {{ character.name }}
+                {% endif %}
             {% endfor %}
         </ul>
+        {% if available_positions == 1 %}
+            {% if current_actor %}
+                <a href="{% url 'apply' movie.slug %}" class="btn btn-default btn-xs">Apply for a role</a>
+            {% endif %}
+        {% endif %}
     </div>
 
     <div class="movie col-lg-12 col-md-12" >

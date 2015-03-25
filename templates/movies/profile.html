@@ -157,6 +157,32 @@
             </div>
         </div>
 
+        {% if movies_produced %}
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Notifications</div>
+
+                    {% if notifications %}
+                        <div class="list-group">
+                            {% for notification in notifications %}
+                                <div class="list-group-item">
+                                    <a href="{% url 'profile' notification.sender.user.user.username %}">{{ notification.sender.user.first_name }} {{ notification.sender.user.last_name }}</a>
+                                    would like to apply for a role in
+                                    <a href="{% url 'movie' notification.movie.slug %}"> {{ notification.movie }} </a>
+                                    <div id="{{ notification.id }}" class="movie notification" style="padding: 5px;">
+                                        {{ notification.message }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    {% else %}
+                        <div class="list-group-item">You have no notifications</div>
+                    {% endif %}
+                </div>
+
+        {% endif %}
+
 
 
 

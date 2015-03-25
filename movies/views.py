@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 import datetime
-from movies.models import Movie, Genre, Actor, Character, MovieRating, UserProfile, Producer
-from movies.forms import MovieForm, CharacterForm, CommentForm, UserProfileForm, Comment
+from movies.models import Movie, Genre, Actor, Character, MovieRating, UserProfile, Producer, Notification
+from movies.forms import MovieForm, CharacterForm, CommentForm, UserProfileForm, Comment, NotificationForm
 import operator
 
 
@@ -85,9 +85,23 @@ def movie(request, movie_name_slug):
         actors = movie.get_actors()
 
         # build a dictionary of form 'character':'actor'
+        current_user = User.objects.get(username=request.user.username)
+        current_user_profile = UserProfile.objects.get(user=current_user)
+        if current_user_profile.type == '2':
+            current_actor = Actor.objects.get(user=current_user_profile)
+        else:
+            current_actor = None
         character_actor = {}
-        for i in range(len(actors)):
-            character_actor[characters[i]] = actors[i]
+        available_positions = 0
+        for i in range(len(characters)):
+            if characters[i].actor is not None:
+                character_actor[characters[i]] = actors[i]
+            else:
+                character_actor[characters[i]] = None
+                available_positions = 1
+
+        context_dict['available_positions'] = available_positions
+        context_dict['current_actor'] = current_actor
 
         # get the movie's rating
         ratings = movie.get_rating()
@@ -446,6 +460,9 @@ def profile(request, username):
         movies_produced = producer.get_movies()
         context_dict['movies_produced'] = movies_produced
 
+        notifications = Notification.objects.filter(receiver=producer)
+        context_dict["notifications"] = notifications
+
     watchlist = current_user_profile.watchlist.all()[:10]
     context_dict['watchlist'] = watchlist
 
@@ -551,3 +568,29 @@ def edit_movie(request, movie_slug):
 
     return render(request, 'movies/edit_movie.html', {'movie_form': movie_form, 'user_profile': user_profile,
                                                       'movie': movie})
+
+
+def send_notification(request, movie_slug):
+    movie = Movie.objects.get(slug=movie_slug)
+    producer = movie.user
+    current_user_profile = UserProfile.objects.get(user=request.user)
+    actor = Actor.objects.get(user=current_user_profile)
+
+    if request.method == 'POST':
+        form = NotificationForm(request.POST)
+
+        if form.is_valid():
+            notification = form.save(commit=False)
+            notification.sender = actor
+            notification.receiver = producer
+            notification.movie = movie
+            notification.save()
+
+            return HttpResponseRedirect('/movies/movie/' + movie_slug)
+
+        else:
+            print form.errors
+    else:
+        form = NotificationForm()
+
+    return render(request, 'movies/apply_for_role.html', {'form': form, 'movie': movie})

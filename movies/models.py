@@ -185,6 +185,18 @@ class ActorRating(models.Model):
         return self.actor.name
 
 
+class Notification(models.Model):
+    sender = models.ForeignKey(Actor)
+    receiver = models.ForeignKey(Producer)
+    message = models.TextField()
+    date = models.DateTimeField()
+    movie = models.ForeignKey(Movie)
+
+    def save(self, *args, **kwargs):
+        self.date = datetime.now()
+        super(Notification, self).save(*args, **kwargs)
+
+
 class Comment(models.Model):
     comment = models.CharField(max_length=256)
     date = models.DateTimeField(null=True)
