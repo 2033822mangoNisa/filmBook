@@ -4,7 +4,65 @@
 
 {% block body_block %}
 
-    Search page <br />
-    {{ query }}
+    <h3>Results for: {{ query }}</h3>
+
+    <!-- movie results -->
+
+    <div class="movie movie-first-box">
+
+        <div class="movie-header">
+            <h4>Films</h4>
+        </div>
+        {% if movie_results %}
+            <ul class="movie-list">
+                {% for movie in movie_results %}
+                    <li><a href="{% url 'movie' movie.slug %}">{{ movie }}</a> </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <b>No results found in Films</b>
+        {% endif %}
+    </div>
+
+
+    <!-- producer results -->
+
+    <div class="movie">
+
+        <div class="movie-header">
+            <h4>Producers</h4>
+        </div>
+        {% if producer_results %}
+            <ul class="movie-list">
+                {% for producer in producer_results %}
+                    <li><a href="{% url 'profile' producer.user.user.username %}">{{ producer.first_name }} {{ producer.last_name }}</a> </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <b>No results found in Producers</b>
+        {% endif %}
+
+    </div>
+
+
+    <!-- actor results -->
+
+    <div class="movie">
+
+        <div class="movie-header">
+            <h4>Actors</h4>
+        </div>
+        {% if actor_results %}
+            <ul class="movie-list">
+                {% for actor in actor_results %}
+                    <li><a href="{% url 'profile' actor.user.user.username %}">{{ actor.name }} {{ actor.last_name }}</a> </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <b>No results found in Actors</b>
+        {% endif %}
+    </div>
+
+
 
 {% endblock %}

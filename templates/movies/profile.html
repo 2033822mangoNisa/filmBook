@@ -94,15 +94,21 @@
         </div>
 
 
-            <ul class="movie-list">
-                {% for comment in my_comments %}
-                    <div class="comment">
-                        Posted on: <a href="{% url 'movie' comment.movie.slug %}">{{ comment.movie }}</a> <br />
-                        {{ comment.comment }} <br />
-                        <b>{{ comment.date }} </b>
+
+        {% for comment in my_comments %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Posted on: <b><a href="{% url 'movie' comment.movie.slug %}">{{ comment.movie }}</a> </b></h3>
                     </div>
-                {% endfor %}
-            </ul>
+                    <div class="panel-body">
+                        {{ comment.comment }}
+                    </div>
+                    <div class="panel-footer">{{ comment.date }}</div>
+                </div>
+
+        {% endfor %}
+
+
 
 
     </div>

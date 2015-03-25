@@ -120,6 +120,16 @@ def movie(request, movie_name_slug):
         else:
             user_profile = ''
 
+        similar_movies = {}
+        for m in Movie.objects.all().order_by('-rating'):
+            similarity = 0
+            for genre in genres:
+                if genre in m.genres.all():
+                    similarity += 1
+            similar_movies[m] = similarity
+        print similar_movies
+
+
         # add everything to context dictionary
         context_dict['movie'] = movie
         context_dict['genres'] = genres
@@ -133,7 +143,6 @@ def movie(request, movie_name_slug):
         context_dict['user_rating'] = user_rating
         context_dict['ratings_no'] = ratings_no
         context_dict['already_in'] = already_in
-
 
         if request.method == 'POST':
             form = CommentForm(request.POST)
@@ -376,12 +385,41 @@ def edit_profile(request, username):
 
 
 def search(request):
+    results = {}
     query = None
     if request.method == 'POST':
         if 'search_textbox' in request.POST:
-            query = request.POST['search_textbox']
+            query = request.POST['search_textbox'].lower()
 
-    return render(request, 'movies/search.html', {'query': query})
+    movie_results = []
+    actor_results = []
+    producer_results = []
+    character_results = []
+
+    for movie in Movie.objects.all():
+        if query in movie.title.lower() or query in str(movie.year):
+            movie_results.append(movie)
+
+    for actor in Actor.objects.all():
+        if query in actor.name.lower() or query in actor.last_name.lower():
+            actor_results.append(actor)
+
+    for producer in Producer.objects.all():
+        if query in producer.first_name.lower() or query in producer.last_name.lower():
+            producer_results.append(producer)
+
+    for character in Character.objects.all():
+        if query in character.name.lower():
+            character_results.append(character)
+
+    results['query'] = query
+    results['movie_results'] = movie_results
+    results['actor_results'] = actor_results
+    results['producer_results'] = producer_results
+    results['character_results'] = character_results
+    print results
+
+    return render(request, 'movies/search.html', results)
 
 
 @login_required
