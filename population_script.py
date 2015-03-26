@@ -40,7 +40,7 @@ def populate():
     # usernames: from test_user1 to test_user20
     # passwords: all the same - 'testpass'
     users = []
-    for i in range(1, 21):
+    for i in range(1, 20):
         new_user = User.objects.get_or_create(username="test_user"+str(i), email="emailaddres"+str(i)+"@adsas.com")[0]
         new_user.set_password("testpass")
         new_user.save()
@@ -118,7 +118,7 @@ def populate():
                                              last_name=new_user_profile18.last_name,
                                              info='32 year old actor. Working mainly in english speaking roles as well '
                                                   'as some spanish roles.',
-                                             link='a link, like the personal website of the actor or something like it')[0]
+                                             link='')[0]
 
     new_actor4 = Actor.objects.get_or_create(user=new_user_profile16, name=new_user_profile16.first_name,
                                              last_name=new_user_profile16.last_name,
@@ -164,12 +164,12 @@ def populate():
 
     new_producer6 = Producer.objects.get_or_create(user=new_user_profile15, first_name=new_user_profile15.first_name,
                                                    last_name=new_user_profile15.last_name, info='Worked on many short films now pursueing at masters in TV Studies',
-                                                   link='https://www.youtube.com/channel/UCV0vRq6CejTTOXsXaZjm9_w')
+                                                   link='https://www.youtube.com/channel/UCV0vRq6CejTTOXsXaZjm9_w')[0]
 
-    # create characters ( a list of 20 characters)
+    # create characters ( a list of characters)
     characters = []
-    for i in range(1, 21):
-        character = add_char('Character'+str(i), actors[i % 6])
+    for i in range(1, 7):
+        character = add_char('Character'+str(i), actors[i-1])
         characters.append(character)
 
     # create genres
@@ -191,23 +191,129 @@ def populate():
     # create movies
     movie1 = add_movie(
         characters=[characters[0], characters[1], characters[2]],    # this should be a list (of any length) of random characters from 'characters' list created above
-        genres=[drama, action, crime],                               # a list of genres from the genres that were created
-        title='Test Movie',
+        genres=[drama, action, family],                               # a list of genres from the genres that were created
+        title='A Tale of Two Kitties',
         year=2015,
         producer=new_producer1,                                      # one from the producers that were created
-        summary="Summary example for a movie"                        # summary for movie (optional)
+        summary='This story will truly pull at your heart strings. It is a tale of a curious kitty called Magma wanting to' 
+                ' make it big in the cat world, leave this life behind the impoverished life she was born into. On her journey'
+                ' she meets a handsome but equally curious kitty called Milo who is on a journey of his own, to leave behind'
+                ' is life of luxury and fame and live a simple family life. Can these two help each other out?'
+                ' Or will curiosity kill these kitties.'              # summary for movie (optional)
     )
 
     movie2 = add_movie(
-        characters=[characters[5], characters[3], characters[15], characters[7]],
-        genres=[adventure, fantasy],
-        title='Another test movie',
-        year=2014,
+        characters=[characters[0], characters[4], characters[5], characters[3]],
+        genres=[romance, thriller],
+        title='The End of the Beginning',
+        year=2013,
         producer=new_producer2,
-        summary="Summary example for a movie"
+        summary= ''
+                 'No one could anticipate that the end was coming, the end of the beginning.'
+                 ' When it arrives, it hits hard!' 
+                 ' Lives are in tatters.'
+                 ' Minds are boggled.'
+                 ' First dates end FOREVER.'
+                 ' Which wont be hard on anyone, after all it was only the end of the BEGINNING!'
     )
 
-    # add more movies here
+    movie3 = add_movie(
+        characters=[characters[5], characters[1], characters[2], characters[3]],
+        genres=[romance, thriller],
+        title='The Beginning of The End',
+        year=2014,
+        producer=new_producer2,
+        summary='The sequal to the end of the beginning'
+                ' Its what you have been waiting for. The Beginning of The End.'
+                ' Will Billy help the world to fly to a new planet to start over?'
+                ' There are only 8 minutes to decide the fate of the world, will Sally make another appearance?'
+                ' Will Sally take no for an answer or will she ruin everything for Billy, did she not understand when Billy'
+                ' Jumped out the window on their first date it was the End of the Beginning?' 
+    )
+
+    movie4 = add_movie(
+        characters=[characters[4], characters[5]],
+        genres=[romance, horror, thriller],
+        title='The Beginning',
+        year=2016,
+        producer=new_producer2,
+        summary= 'Prequel of: The end of the Beginning'
+                 ' You wanted to to know what happening in the beginning before it ended?'
+                 ' Well now is your chance, in this romantic horror which will have you glues to your seats'
+                 ' Why did Billy Joe Bob leave out the window on his first date with Shelly? Now we find out'
+    )
+
+    movie5 = add_movie(
+        characters=[characters[1], characters[2], characters[3], characters[4], characters[5], characters[0]],
+        genres=[fantasy, romance, horror],
+        title='The Frog who wanted to be a Toad',
+        year=2012,
+        producer=new_producer3,
+        summary='Flogaloid always wanted to be a Toad, ever since he fell'
+                ' in love with toad next door, but he knows it can never be'
+                ' she is only into toads.'
+                ' So he diguises himself as a toad to win her heart'
+                ' What happens when he finds out she was infact a homeless turtle? Will their love last?'
+    )
+
+    movie6 = add_movie(
+        characters=[characters[0], characters[1]],
+        genres=[adventure, comedy],
+        title='Learning Greed',
+        year=2014,
+        producer=new_producer4,
+        summary='Can greed be learnt? Jim Bob sure hopes so, he is the least greedy man in the world'
+                ' and it is costing him fortune! He goes to the USA to find the greediest man in the world'
+                ' and learn his ways.'
+    )
+
+    movie7 = add_movie(
+        characters=[characters[5], characters[3], characters[5], characters[0]],
+        genres=[adventure, fantasy, crime, sci_fi],
+        title='Im out robbing',
+        year=2014,
+        producer=new_producer5,
+        summary='Her son is a good for nothing intergalactic robber'
+                ' She is the Queen of the world'
+                ' How will she and can she pass on the crown to him?'
+                ' Can she teach him to be on the straight and narrow path to good? or will she slap him silly?'
+    )
+
+    movie8= add_movie(
+        characters=[characters[2], characters[3], characters[4]],
+        genres=[biography, animation],
+        title='Ants in your pant',
+        year=2011,
+        producer=new_producer6,
+        summary='A Biography abut people who cant sit still since they have ants in their pants'
+                ' The documentary also looks at liers whos pants are on fire'
+                ' As well as a brief overview of a dance crew with bees on their knees.'
+    )
+
+    movie9 = add_movie(
+        characters=[characters[0]],
+        genres=[mystery],
+        title='Testing, 1.2.3 Testing',
+        year=2010,
+        producer=new_producer6,
+        summary='This mystery will have you questioning your life.'
+                ' Will the tests pass or wont they?'
+                ' What happens if the mic doesnt work? Will the show go on?'
+    )
+
+    movie10 = add_movie(
+        characters=[characters[4], characters[3], characters[1], characters[5]],
+        genres=[adventure, fantasy],
+        title='Rub a Dub Dub',
+        year=2015,
+        producer=new_producer3,
+        summary='Rub a dub dub,'
+                ' Three fools in a tub,'
+                ' And who do you think they be?'
+                ' The butcher, the baker,'
+                ' The candlestick maker.'
+                ' Turn them out, knaves all three'
+    )
 
 
 

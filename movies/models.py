@@ -46,6 +46,20 @@ class Actor(models.Model):
     link = models.URLField(blank=True)
     available = models.CharField(max_length=3, default='no')
 
+    def get_rating(self):
+        ratings = ActorRating.objects.filter(actor=self)
+
+        ratings_sum = 0
+        for r in ratings:
+            ratings_sum += r.rating
+
+        if len(ratings) != 0:
+            rating = ratings_sum/len(ratings)
+        else:
+            rating = 0
+
+        return rating
+
     def get_characters(self):
         return Character.objects.filter(actor__name=self.name)
 
@@ -162,6 +176,15 @@ class MovieRating(models.Model):
         return self.movie.title
 
 
+class ActorRating(models.Model):
+    actor = models.ForeignKey(Actor)
+    user = models.ForeignKey(UserProfile)
+    rating = models.FloatField()
+
+    def __unicode__(self):
+        return self.actor.name
+
+
 class Notification(models.Model):
     sender = models.ForeignKey(Actor)
     receiver = models.ForeignKey(Producer)
@@ -180,6 +203,12 @@ class Comment(models.Model):
     user = models.ForeignKey(UserProfile)
     movie = models.ForeignKey(Movie)
 
+
+class Review(models.Model):
+    text = models.TextField()
+    date = models.DateTimeField()
+    user = models.ForeignKey(UserProfile)
+    movie = models.ForeignKey(Movie)
 
 
 

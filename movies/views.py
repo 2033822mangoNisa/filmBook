@@ -69,6 +69,7 @@ def genre(request, genre_name_slug):
     return render(request, 'movies/genre.html', context_dict)
 
 
+@login_required
 def movie(request, movie_name_slug):
     context_dict = {}
 
