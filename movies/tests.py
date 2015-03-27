@@ -1,7 +1,10 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.http import HttpRequest
+from movies.views import search
 from movies.models import Movie, Genre, Actor, Producer, Comment, UserProfile, Notification, MovieRating, Character
-
+from django.test.client import RequestFactory
 
 def add_movie(genres, characters, title, year, producer, summary=''):
     m = Movie.objects.get_or_create(title=title, year=year, user=producer, summary=summary)[0]
@@ -30,6 +33,12 @@ def add_genre(name):
     return g
 
 
+def add_user_profile(username,first,last,type):
+     new_user = User.objects.get_or_create(username=username, email="emailaddres@adsas.com")[0]
+     p = UserProfile.objects.get_or_create(user=new_user, first_name=first, last_name=last,
+                                                     info='', type=type)[0]
+     return p
+    
 class GenreTestCase(TestCase):
     def setUp(self):
         Genre.objects.create(name='TestGenre')
@@ -115,3 +124,53 @@ class MovieTestCase(TestCase):
         self.assertEqual(1, movie.get_rating()['ratings_no'])
 
 
+class IndexViewTest(TestCase):
+    
+    def test_index_with_film(self):
+        p = add_user_profile("jd1", "John","Doe",3)
+        prod = Producer.objects.get_or_create(user=p, first_name='ex',last_name='ample',
+                                              info='',link='')[0]
+            
+        add_movie([],[],'Film1',1992, prod)
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Film1")
+
+class ActorsViewTest(TestCase):
+
+    def setUp(self):
+        p = add_user_profile("jj1", "John","Jones",3)
+        a = add_user_profile("js1", "Jane","Smith",2)
+        prod1 = Producer.objects.create(user=p, first_name=p.first_name,
+                                        last_name=p.last_name,info='',link='')
+        actor1 = Actor.objects.create(user=a, name=a.first_name,
+                                      last_name=a.last_name,info='',link='')
+
+    def test_producer(self):
+        response = self.client.get(reverse('actors'))
+        self.assertContains(response, "Jones")
+    def test_actor(self):
+        response = self.client.get(reverse('actors'))
+        self.assertContains(response, "Smith")
+
+class FilmsViewTest(TestCase):
+
+    def setUp(self):
+        TestGenre = add_genre('TestGenre')
+        Test2 = add_genre('Test2')
+        p = add_user_profile("jd1", "John","Doe",3)
+        prod = Producer.objects.get_or_create(user=p, first_name='ex',last_name='ample',
+                                              info='',link='')[0]
+        movie1 = add_movie([TestGenre],[],'Film1',2015,prod)
+        movie2 = add_movie([Test2],[],'Film2',2016,prod)
+        
+    def test_add_new_genre(self):
+        response = self.client.get(reverse('genres'))
+        self.assertContains(response,'TestGenre')
+        self.assertContains(response,'Test2')
+
+    def test_add_new_film(self):
+        response = self.client.get(reverse('genres'))
+        self.assertContains(response,'Film1')
+        self.assertContains(response,'Film2')
+        
