@@ -10,12 +10,19 @@ Download the zip file and extract the files
 Open Command Prompt and navigate to the Filmbook folder
 
 Ensure you use pip to install the following:
+
 	Django 
-	django-bootstrap-toolkit 
+	
+	django-bootstrap-toolkit
+	
 	django-registration-redux 
+	
 	Pillow 
+	
 	pip 
+	
 	setuptools 
+	
 	sorl-thumbnail 
 
 Then run: python manage.py runserver
